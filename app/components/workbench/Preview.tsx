@@ -76,11 +76,11 @@ export const Preview = memo(() => {
       {isPortDropdownOpen && (
         <div className="z-iframe-overlay w-full h-full absolute" onClick={() => setIsPortDropdownOpen(false)} />
       )}
-      <div className="bg-bolt-elements-background-depth-2 p-2 flex items-center gap-1.5">
+      <div className="bg-lexi-elements-background-depth-2 p-2 flex items-center gap-1.5">
         <IconButton icon="i-ph:arrow-clockwise" onClick={reloadPreview} />
         <div
-          className="flex items-center gap-1 flex-grow bg-bolt-elements-preview-addressBar-background border border-bolt-elements-borderColor text-bolt-elements-preview-addressBar-text rounded-full px-3 py-1 text-sm hover:bg-bolt-elements-preview-addressBar-backgroundHover hover:focus-within:bg-bolt-elements-preview-addressBar-backgroundActive focus-within:bg-bolt-elements-preview-addressBar-backgroundActive
-        focus-within-border-bolt-elements-borderColorActive focus-within:text-bolt-elements-preview-addressBar-textActive"
+          className="flex items-center gap-1 flex-grow bg-lexi-elements-preview-addressBar-background border border-lexi-elements-borderColor text-lexi-elements-preview-addressBar-text rounded-full px-3 py-1 text-sm hover:bg-lexi-elements-preview-addressBar-backgroundHover hover:focus-within:bg-lexi-elements-preview-addressBar-backgroundActive focus-within:bg-lexi-elements-preview-addressBar-backgroundActive
+        focus-within-border-lexi-elements-borderColorActive focus-within:text-lexi-elements-preview-addressBar-textActive"
         >
           <input
             ref={inputRef}
@@ -112,7 +112,7 @@ export const Preview = memo(() => {
           />
         )}
       </div>
-      <div className="flex-1 border-t border-bolt-elements-borderColor">
+      <div className="flex-1 border-t border-lexi-elements-borderColor">
         {activePreview ? (
           <iframe ref={iframeRef} className="border-none w-full h-full bg-white" src={iframeUrl} />
         ) : (

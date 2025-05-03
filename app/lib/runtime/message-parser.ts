@@ -3,10 +3,10 @@ import type { BoltArtifactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<boltArtifact';
-const ARTIFACT_TAG_CLOSE = '</boltArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<boltAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</boltAction>';
+const ARTIFACT_TAG_OPEN = '<lexiArtifact';
+const ARTIFACT_TAG_CLOSE = '</lexiArtifact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<lexiAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</lexiAction>';
 
 const logger = createScopedLogger('MessageParser');
 
@@ -271,7 +271,7 @@ export class StreamingMessageParser {
 
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
-    'class="__boltArtifact__"',
+    'class="__lexiArtifact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),

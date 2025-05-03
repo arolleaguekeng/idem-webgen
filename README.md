@@ -1,4 +1,4 @@
-[![Bolt.new: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://bolt.new)
+[![Bolt.new: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://lexi.new)
 
 # Bolt.new: AI-Powered Full-Stack Web Development in the Browser
 
@@ -36,7 +36,7 @@ Here are some tips to get the most out of Bolt.new:
 ## FAQs
 
 **Where do I sign up for a paid plan?**  
-Bolt.new is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Bolt.new](https://bolt.new) settings, in the lower-left hand corner of the application. 
+Bolt.new is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Bolt.new](https://lexi.new) settings, in the lower-left hand corner of the application. 
 
 **What happens if I hit the free usage limit?**  
 Once your free daily token limit is reached, AI interactions are paused until the next day or until you upgrade your plan.
@@ -45,10 +45,10 @@ Once your free daily token limit is reached, AI interactions are paused until th
 Yes, Bolt.new is in beta, and we are actively improving it based on feedback.
 
 **How can I report Bolt.new issues?**  
-Check out the [Issues section](https://github.com/stackblitz/bolt.new/issues) to report an issue or request a new feature. Please use the search feature to check if someone else has already submitted the same issue/request.
+Check out the [Issues section](https://github.com/stackblitz/lexi.new/issues) to report an issue or request a new feature. Please use the search feature to check if someone else has already submitted the same issue/request.
 
 **What frameworks/libraries currently work on Bolt?**  
 Bolt.new supports most popular JavaScript frameworks and libraries. If it runs on StackBlitz, it will run on Bolt.new as well.
 
-**How can I add make sure my framework/project works well in bolt?**  
+**How can I add make sure my framework/project works well in lexi?**  
 We are excited to work with the JavaScript ecosystem to improve functionality in Bolt. Reach out to us via [hello@stackblitz.com](mailto:hello@stackblitz.com) to discuss how we can partner!
