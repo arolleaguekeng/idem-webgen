@@ -16,6 +16,7 @@ import {
   limit,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import type { UserModel } from './userModel';
 
 const logger = createScopedLogger('ChatHistory');
 
@@ -52,6 +53,27 @@ async function checkAuth(): Promise<void> {
       },
     );
   });
+}
+
+export async function getCurrentUser(): Promise<UserModel | null> {
+  try {
+    const response = await fetch('http://localhost:3000/api/profile', {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      // window.location = 'http://localhost:4200/login';
+      return null;
+    }
+
+    const user = (await response.json()) as UserModel;
+    console.log('CurrentUser', user);
+
+    return user;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
 }
 
 // référence à la collection 'chats'
