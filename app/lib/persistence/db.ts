@@ -1,125 +1,181 @@
+import { getAuth } from 'firebase/auth';
 import type { Message } from 'ai';
 import { createScopedLogger } from '~/utils/logger';
 import type { ChatHistoryItem } from './useChatHistory';
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
 const logger = createScopedLogger('ChatHistory');
 
-// this is used at the top level and never rejects
-export async function openDatabase(): Promise<IDBDatabase | undefined> {
-  return new Promise((resolve) => {
-    const request = indexedDB.open('lexiHistory', 1);
+// configuration Firebase (à remplacer avec votre config)
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_STORAGE_BUCKET',
+  messagingSenderId: 'YOUR_SENDER_ID',
+  appId: 'YOUR_APP_ID',
+};
 
-    request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-      const db = (event.target as IDBOpenDBRequest).result;
+// initialisation de Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-      if (!db.objectStoreNames.contains('chats')) {
-        const store = db.createObjectStore('chats', { keyPath: 'id' });
-        store.createIndex('id', 'id', { unique: true });
-        store.createIndex('urlId', 'urlId', { unique: true });
-      }
-    };
+async function checkAuth(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(
+      (user) => {
+        unsubscribe();
 
-    request.onsuccess = (event: Event) => {
-      resolve((event.target as IDBOpenDBRequest).result);
-    };
-
-    request.onerror = (event: Event) => {
-      resolve(undefined);
-      logger.error((event.target as IDBOpenDBRequest).error);
-    };
+        if (user) {
+          resolve();
+        } else {
+          reject(new Error('User not authenticated'));
+        }
+      },
+      (error) => {
+        unsubscribe();
+        reject(error);
+      },
+    );
   });
 }
 
-export async function getAll(db: IDBDatabase): Promise<ChatHistoryItem[]> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readonly');
-    const store = transaction.objectStore('chats');
-    const request = store.getAll();
+// référence à la collection 'chats'
+const chatsCollection = collection(db, 'chats');
 
-    request.onsuccess = () => resolve(request.result as ChatHistoryItem[]);
-    request.onerror = () => reject(request.error);
-  });
+export async function openDatabase(): Promise<typeof db> {
+  return Promise.resolve(db);
+}
+
+export async function getAll(): Promise<ChatHistoryItem[]> {
+  try {
+    checkAuth();
+
+    const querySnapshot = await getDocs(chatsCollection);
+
+    return querySnapshot.docs.map((doc) => doc.data() as ChatHistoryItem);
+  } catch (error) {
+    logger.error('Error getting all chats:', error);
+    throw error;
+  }
 }
 
 export async function setMessages(
-  db: IDBDatabase,
   id: string,
   messages: Message[],
   urlId?: string,
   description?: string,
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readwrite');
-    const store = transaction.objectStore('chats');
-
-    const request = store.put({
+  try {
+    const chatDoc = doc(chatsCollection, id);
+    await setDoc(chatDoc, {
       id,
       messages,
-      urlId,
+      urlId: urlId || id,
       description,
       timestamp: new Date().toISOString(),
     });
-
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
+  } catch (error) {
+    logger.error('Error setting messages:', error);
+    throw error;
+  }
 }
 
-export async function getMessages(db: IDBDatabase, id: string): Promise<ChatHistoryItem> {
-  return (await getMessagesById(db, id)) || (await getMessagesByUrlId(db, id));
+export async function getMessages(id: string): Promise<ChatHistoryItem | undefined> {
+  const byId = await getMessagesById(id);
+
+  if (byId) {
+    return byId;
+  }
+
+  return getMessagesByUrlId(id);
 }
 
-export async function getMessagesByUrlId(db: IDBDatabase, id: string): Promise<ChatHistoryItem> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readonly');
-    const store = transaction.objectStore('chats');
-    const index = store.index('urlId');
-    const request = index.get(id);
+export async function getMessagesByUrlId(urlId: string): Promise<ChatHistoryItem | undefined> {
+  try {
+    const q = query(chatsCollection, where('urlId', '==', urlId), limit(1));
+    const querySnapshot = await getDocs(q);
 
-    request.onsuccess = () => resolve(request.result as ChatHistoryItem);
-    request.onerror = () => reject(request.error);
-  });
+    if (querySnapshot.empty) {
+      return undefined;
+    }
+
+    return querySnapshot.docs[0].data() as ChatHistoryItem;
+  } catch (error) {
+    logger.error('Error getting messages by urlId:', error);
+    throw error;
+  }
 }
 
-export async function getMessagesById(db: IDBDatabase, id: string): Promise<ChatHistoryItem> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readonly');
-    const store = transaction.objectStore('chats');
-    const request = store.get(id);
+export async function getMessagesById(id: string): Promise<ChatHistoryItem | undefined> {
+  try {
+    checkAuth();
 
-    request.onsuccess = () => resolve(request.result as ChatHistoryItem);
-    request.onerror = () => reject(request.error);
-  });
+    const chatDoc = doc(chatsCollection, id);
+    const docSnapshot = await getDoc(chatDoc);
+
+    if (!docSnapshot.exists()) {
+      return undefined;
+    }
+
+    return docSnapshot.data() as ChatHistoryItem;
+  } catch (error) {
+    logger.error('Error getting messages by id:', error);
+    throw error;
+  }
 }
 
-export async function deleteById(db: IDBDatabase, id: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readwrite');
-    const store = transaction.objectStore('chats');
-    const request = store.delete(id);
+export async function deleteById(id: string): Promise<void> {
+  try {
+    checkAuth();
 
-    request.onsuccess = () => resolve(undefined);
-    request.onerror = () => reject(request.error);
-  });
+    const chatDoc = doc(chatsCollection, id);
+    await deleteDoc(chatDoc);
+  } catch (error) {
+    logger.error('Error deleting chat:', error);
+    throw error;
+  }
 }
 
-export async function getNextId(db: IDBDatabase): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readonly');
-    const store = transaction.objectStore('chats');
-    const request = store.getAllKeys();
+export async function getNextId(): Promise<string> {
+  try {
+    // pour Firestore, on peut utiliser un timestamp comme ID ou générer un ID aléatoire mais si vous voulez conserver la logique d'incrémentation :
+    checkAuth();
 
-    request.onsuccess = () => {
-      const highestId = request.result.reduce((cur, acc) => Math.max(+cur, +acc), 0);
-      resolve(String(+highestId + 1));
-    };
+    const q = query(chatsCollection, orderBy('id', 'desc'), limit(1));
+    const querySnapshot = await getDocs(q);
 
-    request.onerror = () => reject(request.error);
-  });
+    if (querySnapshot.empty) {
+      return '1';
+    }
+
+    const lastId = querySnapshot.docs[0].data().id;
+
+    return String(Number(lastId) + 1);
+  } catch (error) {
+    logger.error('Error getting next id:', error);
+    throw error;
+  }
 }
 
-export async function getUrlId(db: IDBDatabase, id: string): Promise<string> {
-  const idList = await getUrlIds(db);
+export async function getUrlId(id: string): Promise<string> {
+  checkAuth();
+
+  const idList = await getUrlIds();
 
   if (!idList.includes(id)) {
     return id;
@@ -134,27 +190,15 @@ export async function getUrlId(db: IDBDatabase, id: string): Promise<string> {
   }
 }
 
-async function getUrlIds(db: IDBDatabase): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction('chats', 'readonly');
-    const store = transaction.objectStore('chats');
-    const idList: string[] = [];
+async function getUrlIds(): Promise<string[]> {
+  try {
+    checkAuth();
 
-    const request = store.openCursor();
+    const querySnapshot = await getDocs(chatsCollection);
 
-    request.onsuccess = (event: Event) => {
-      const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
-
-      if (cursor) {
-        idList.push(cursor.value.urlId);
-        cursor.continue();
-      } else {
-        resolve(idList);
-      }
-    };
-
-    request.onerror = () => {
-      reject(request.error);
-    };
-  });
+    return querySnapshot.docs.map((doc) => doc.data().urlId).filter(Boolean);
+  } catch (error) {
+    logger.error('Error getting urlIds:', error);
+    throw error;
+  }
 }

@@ -2,7 +2,6 @@ import { motion, type Variants } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
-import { IconButton } from '~/components/ui/IconButton';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
 import { db, deleteById, getAll, chatId, type ChatHistoryItem } from '~/lib/persistence';
 import { cubicEasingFn } from '~/utils/easings';
@@ -41,7 +40,7 @@ export function Menu() {
 
   const loadEntries = useCallback(() => {
     if (db) {
-      getAll(db)
+      getAll()
         .then((list) => list.filter((item) => item.urlId && item.description))
         .then(setList)
         .catch((error) => toast.error(error.message));
@@ -52,7 +51,7 @@ export function Menu() {
     event.preventDefault();
 
     if (db) {
-      deleteById(db, item.id)
+      deleteById(item.id)
         .then(() => {
           loadEntries();
 

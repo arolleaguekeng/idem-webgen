@@ -41,7 +41,7 @@ export function useChatHistory() {
     }
 
     if (mixedId) {
-      getMessages(db, mixedId)
+      getMessages(mixedId)
         .then((storedMessages) => {
           if (storedMessages && storedMessages.messages.length > 0) {
             setInitialMessages(storedMessages.messages);
@@ -71,7 +71,7 @@ export function useChatHistory() {
       const { firstArtifact } = workbenchStore;
 
       if (!urlId && firstArtifact?.id) {
-        const urlId = await getUrlId(db, firstArtifact.id);
+        const urlId = await getUrlId(firstArtifact.id);
 
         navigateChat(urlId);
         setUrlId(urlId);
@@ -82,7 +82,7 @@ export function useChatHistory() {
       }
 
       if (initialMessages.length === 0 && !chatId.get()) {
-        const nextId = await getNextId(db);
+        const nextId = await getNextId();
 
         chatId.set(nextId);
 
@@ -91,7 +91,7 @@ export function useChatHistory() {
         }
       }
 
-      await setMessages(db, chatId.get() as string, messages, urlId, description.get());
+      await setMessages(chatId.get() as string, messages, urlId, description.get());
     },
   };
 }
