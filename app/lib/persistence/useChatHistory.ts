@@ -12,6 +12,7 @@ export interface ChatHistoryItem {
   description?: string;
   messages: Message[];
   timestamp: string;
+  projectId?: string;
 }
 
 const persistenceEnabled = !import.meta.env.VITE_DISABLE_PERSISTENCE;

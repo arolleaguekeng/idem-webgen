@@ -2,6 +2,8 @@ import { getAuth } from 'firebase/auth';
 import type { Message } from 'ai';
 import { createScopedLogger } from '~/utils/logger';
 import type { ChatHistoryItem } from './useChatHistory';
+import { env } from 'node:process';
+
 import {
   getFirestore,
   collection,
@@ -21,13 +23,13 @@ import type { UserModel } from './userModel';
 const logger = createScopedLogger('ChatHistory');
 
 // configuration Firebase (à remplacer avec votre config)
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId: 'YOUR_APP_ID',
+export const firebaseConfig = {
+  apiKey: env.FIREBASE_API_KEY,
+  authDomain: env.FIREBASE_AUTH_DOMAIN,
+  projectId: env.FIREBASE_PROJECT_ID,
+  storageBucket: env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.FIREBASE_APP_ID,
 };
 
 // initialisation de Firebase
@@ -76,8 +78,10 @@ export async function getCurrentUser(): Promise<UserModel | null> {
   }
 }
 
+const currentUser = await getCurrentUser();
+
 // référence à la collection 'chats'
-const chatsCollection = collection(db, 'chats');
+const chatsCollection = collection(db, `users/${currentUser?.uid}/chats`);
 
 export async function openDatabase(): Promise<typeof db> {
   return Promise.resolve(db);
