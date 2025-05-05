@@ -61,7 +61,7 @@ function getEditorTheme(settings: EditorSettings) {
     },
     '.cm-gutter': {
       '&.cm-lineNumbers': {
-        fontFamily: 'Jura sans-serif',
+        fontFamily: 'Roboto Mono, monospace',
         fontSize: settings.gutterFontSize ?? settings.fontSize ?? '12px',
         minWidth: '40px',
       },

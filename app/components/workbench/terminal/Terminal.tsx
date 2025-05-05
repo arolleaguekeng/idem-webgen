@@ -37,7 +37,7 @@ export const Terminal = memo(
         disableStdin: readonly,
         theme: getTerminalTheme(readonly ? { cursor: '#00000000' } : {}),
         fontSize: 12,
-        fontFamily: 'Jura, sans-serif',
+        fontFamily: 'Menlo, courier-new, courier, monospace',
       });
 
       terminalRef.current = terminal;
