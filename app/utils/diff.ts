@@ -84,7 +84,7 @@ export function diffFiles(fileName: string, oldFileContent: string, newFileConte
  * <lexi_file_modifications>
  * <diff path="/home/project/index.js">
  * - console.log('Hello, World!');
- * + console.log('Hello, Bolt!');
+ * + console.log('Hello, Lexi!');
  * </diff>
  * </lexi_file_modifications>
  * ```

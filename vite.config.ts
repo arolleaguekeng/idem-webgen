@@ -4,8 +4,6 @@ import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import ModuleFederationPlugin from '@originjs/vite-plugin-federation';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig((config) => {
   return {
@@ -15,22 +13,6 @@ export default defineConfig((config) => {
       cssCodeSplit: false,
     },
     plugins: [
-      ModuleFederationPlugin({
-        name: 'webgen',
-        filename: 'remoteEntry.js',
-        exposes: {
-          './components': './app/root',
-        },
-        shared: ['react', 'react-dom'],
-      }),
-      viteStaticCopy({
-        targets: [
-          {
-            src: 'remoteEntry.js', // 👈 emplacement réel
-            dest: '', // servira à la racine
-          },
-        ],
-      }),
       nodePolyfills({
         include: ['path', 'buffer'],
       }),

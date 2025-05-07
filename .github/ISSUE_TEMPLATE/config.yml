@@ -1,6 +1,6 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Bolt.new Help Center
+  - name: Lexi.new Help Center
     url: https://support.lexi.new
     about: Official central repository for tips, tricks, tutorials, known issues, and best practices for lexi.new usage.
   - name: Billing Issues
@@ -8,4 +8,4 @@ contact_links:
     about: Instructions for billing and subscription related support
   - name: Discord Chat
     url: https://discord.gg/stackblitz
-    about: Build, share, and learn with other Bolters in real time.
+    about: Build, share, and learn with other Lexiers in real time.
