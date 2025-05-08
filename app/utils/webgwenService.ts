@@ -13,15 +13,7 @@ export class WebGenService {
    * @returns Formatted prompt string for AI consumption
    */
   generateWebsitePrompt(
-    project: ProjectModel,
-    selectedOptions: {
-      stack: string;
-      seoEnabled: boolean;
-      contactFormEnabled: boolean;
-      analyticsEnabled: boolean;
-      i18nEnabled: boolean;
-      performanceOptimized: boolean;
-    }
+    project: ProjectModel
   ): string {
     // Validate required inputs
     if (!project?.description) {
@@ -31,7 +23,7 @@ export class WebGenService {
     // Build prompt sections
     const sections = [
       this._buildProjectOverview(project),
-      this._buildTechnicalSpecs(project, selectedOptions),
+      this._buildTechnicalSpecs(project, project.analysisResultModel.landing.selectedOptions),
       this._buildBrandGuidelines(project.analysisResultModel.branding),
       this._buildOutputRequirements(),
       this._buildQualityStandards(),
