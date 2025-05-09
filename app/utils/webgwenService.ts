@@ -38,7 +38,7 @@ ${project.constraints?.length ? `**Constraints:**\n${project.constraints.map((c)
     const options = project.analysisResultModel.landing.selectedOptions;
 
     return `# TECHNICAL SPECIFICATIONS
-**Framework:** ${options.stack.toUpperCase()}
+** Web Technology:** ${options.stack.toUpperCase()}
 **Core Features:**
 - SEO: ${options.seoEnabled ? 'Advanced optimization' : 'Basic'}
 - Contact Form: ${options.contactFormEnabled ? 'Included' : 'Excluded'}
