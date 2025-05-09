@@ -11,6 +11,7 @@ import { BaseChat } from './BaseChat';
 import { WebGenService } from '~/utils/webgwenService';
 import { getProjectById } from '~/lib/persistence/db';
 import { createScopedLogger } from '~/utils/logger';
+import { fileModificationsToHTML } from '~/utils/diff';
 
 const logger = createScopedLogger('GenerateChat');
 
@@ -29,7 +30,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   const { showChat } = useStore(chatStore);
   const [animationScope, animate] = useAnimate();
 
-  const { messages, isLoading, stop, append } = useChat({
+  const { messages, append, isLoading, stop } = useChat({
     api: '/api/chat',
     onError: (error) => {
       logger.error('Request failed\n\n', error);
@@ -42,6 +43,29 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   });
 
   const { parsedMessages, parseMessages } = useMessageParser();
+
+  const executeGeneration = async (prompt: string) => {
+    if (isLoading) return;
+
+    await workbenchStore.saveAllFiles();
+    const fileModifications = workbenchStore.getFileModifcations();
+    chatStore.setKey('aborted', false);
+
+    // Execute the generation directly without showing in chat
+    if (fileModifications !== undefined) {
+      const diff = fileModificationsToHTML(fileModifications);
+      await append({
+        role: 'system',
+        content: `${diff}\n\ngenerate app with the following prompt:\n${prompt}`,
+      });
+      workbenchStore.resetAllFileModifications();
+    } else {
+      await append({
+        role: 'system',
+        content: `generate app with the following prompt:\n${prompt}`,
+      });
+    }
+  };
 
   useEffect(() => {
     const initializeChat = async () => {
@@ -63,12 +87,18 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
         }
 
         const prompt = webGenService.generateWebsitePrompt(project);
+
+        // Show the prompt in chat
         await append({
           role: 'user',
           content: prompt,
         });
 
+        // Execute generation directly
+        await executeGeneration(prompt);
+
         chatStore.setKey('started', true);
+        setIsLoadingProject(false);
       } catch (error) {
         logger.error('Error initializing generation:', error);
         setError(error instanceof Error ? error.message : 'An error occurred');
@@ -111,7 +141,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     <>
       <BaseChat
         ref={animationScope}
-        messages={messages.filter(m => m.role === 'assistant')}
+        messages={messages.filter((m) => m.role === 'user' || m.role === 'assistant')}
         chatStarted={true}
         isStreaming={isLoading}
         handleStop={stop}
