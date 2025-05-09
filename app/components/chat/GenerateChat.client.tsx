@@ -44,6 +44,15 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
   const { parsedMessages, parseMessages } = useMessageParser();
 
+  const sendMessage = async (message: string) => {
+    if (isLoading) return;
+
+    await append({
+      role: 'assistant',
+      content: message,
+    });
+  };
+
   const executeGeneration = async (prompt: string) => {
     if (isLoading) return;
 
@@ -51,21 +60,19 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     const fileModifications = workbenchStore.getFileModifcations();
     chatStore.setKey('aborted', false);
 
-    // Send the generation command as a hidden message
+    // First display the prompt
+    await append({
+      role: 'user',
+      content: prompt,
+    });
+
+    // Then execute it
     if (fileModifications !== undefined) {
       const diff = fileModificationsToHTML(fileModifications);
-      await append({
-        role: 'system',
-        content: `${diff}\n\n ${prompt}`,
-        id: 'hidden-generation',
-      });
+      await sendMessage(`${diff}\n\n${prompt}`);
       workbenchStore.resetAllFileModifications();
     } else {
-      await append({
-        role: 'system',
-        content: `${prompt}`,
-        id: 'hidden-generation',
-      });
+      await sendMessage(prompt);
     }
   };
 
