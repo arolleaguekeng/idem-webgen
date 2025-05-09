@@ -1,26 +1,14 @@
-import type { BrandIdentityModel } from "~/lib/persistence/models/brand-identity.model";
-import type { ProjectModel } from "~/lib/persistence/models/project.model";
-
+import type { BrandIdentityModel } from '~/lib/persistence/models/brand-identity.model';
+import type { ProjectModel } from '~/lib/persistence/models/project.model';
 
 export class WebGenService {
-  
-
-  /**
-   * Generates an optimized AI prompt for website generation
-   * @param project - The project configuration
-   * @param brand - Complete brand identity guidelines
-   * @param selectedOptions - Technical stack and feature selections
-   * @returns Formatted prompt string for AI consumption
-   */
-  generateWebsitePrompt(
-    project: ProjectModel
-  ): string {
-    // Validate required inputs
+  generateWebsitePrompt(project: ProjectModel): string {
+    // validate required inputs
     if (!project?.description) {
       throw new Error('Project description is required');
     }
 
-    // Build prompt sections
+    // build prompt sections
     const sections = [
       this._buildProjectOverview(project),
       this._buildTechnicalSpecs(project, project.analysisResultModel.landing.selectedOptions),
@@ -35,17 +23,13 @@ export class WebGenService {
   private _buildProjectOverview(project: ProjectModel): string {
     return `# PROJECT OVERVIEW
             **Name:** ${project.name}
-            **Type:** ${project.type.toUpperCase()}
+            **Type:** ${project.type.toString().toUpperCase()}
             **Description:** ${project.description}
             **Target Audience:** ${project.targets}
             **Key Constraints:**
             ${project.constraints.map((c) => `- ${c}`).join('\n')}
             **Team Size:** ${project.teamSize}
-            ${
-              project.budgetIntervals
-                ? `**Budget:** ${project.budgetIntervals}`
-                : ''
-            }`;
+            ${project.budgetIntervals ? `**Budget:** ${project.budgetIntervals}` : ''}`;
   }
 
   private _buildTechnicalSpecs(project: ProjectModel, options: any): string {
@@ -53,35 +37,14 @@ export class WebGenService {
             **Framework:** ${options.stack.toUpperCase()}
             **Core Features:**
             - SEO: ${options.seoEnabled ? 'Advanced optimization' : 'Basic'}
-            - Contact Form: ${
-              options.contactFormEnabled ? 'Included' : 'Excluded'
-            }
-            - Analytics: ${
-              options.analyticsEnabled ? 'Configured' : 'Not included'
-            }
-            - i18n: ${
-              options.i18nEnabled ? 'Multi-language support' : 'Single language'
-            }
-            - Performance: ${
-              options.performanceOptimized ? 'Optimized' : 'Standard'
-            }
+            - Contact Form: ${options.contactFormEnabled ? 'Included' : 'Excluded'}
+            - Analytics: ${options.analyticsEnabled ? 'Configured' : 'Not included'}
+            - i18n: ${options.i18nEnabled ? 'Multi-language support' : 'Single language'}
+            - Performance: ${options.performanceOptimized ? 'Optimized' : 'Standard'}
 
             **Architecture Requirements:**
-            - ${
-              project.type === 'web'
-                ? 'Responsive design'
-                : 'Platform-specific patterns'
-            }
-            - ${
-              project.teamSize.includes('1')
-                ? 'Simple structure'
-                : 'Modular architecture'
-            }
-            ${
-              project.constraints.includes('Low bandwidth')
-                ? '- Data efficiency prioritized'
-                : ''
-            }`;
+            - ${project.type === 'web' ? 'Responsive design' : 'Platform-specific patterns'}
+            ${project.constraints}`;
   }
 
   private _buildBrandGuidelines(brand: BrandIdentityModel): string {

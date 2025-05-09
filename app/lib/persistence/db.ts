@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import type { UserModel } from './userModel';
+import type { ProjectModel } from './models/project.model';
 
 const logger = createScopedLogger('ChatHistory');
 
@@ -229,3 +230,24 @@ async function getUrlIds(): Promise<string[]> {
     throw error;
   }
 }
+
+export const getProjectById = async (projectId: string): Promise<ProjectModel | null> => {
+  if (!projectId) {
+    throw new Error('No project ID provided');
+  }
+
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    throw new Error('Not authenticated');
+  }
+
+  const projectRef = doc(db, `users/${currentUser.uid}/projects/${projectId}`);
+  const projectDoc = await getDoc(projectRef);
+
+  if (!projectDoc.exists()) {
+    throw new Error('Project not found');
+  }
+
+  return { ...projectDoc.data(), id: projectDoc.id } as ProjectModel;
+};
