@@ -51,27 +51,20 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     const fileModifications = workbenchStore.getFileModifcations();
     chatStore.setKey('aborted', false);
 
-    // Execute the generation directly to webcontainer
+    // Send the generation command as a hidden message
     if (fileModifications !== undefined) {
       const diff = fileModificationsToHTML(fileModifications);
-      await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt,
-          fileModifications: diff,
-        }),
+      await append({
+        role: 'system',
+        content: `${diff}\n\n ${prompt}`,
+        id: 'hidden-generation',
       });
       workbenchStore.resetAllFileModifications();
     } else {
-      await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
+      await append({
+        role: 'system',
+        content: `${prompt}`,
+        id: 'hidden-generation',
       });
     }
   };
@@ -150,7 +143,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     <>
       <BaseChat
         ref={animationScope}
-        messages={messages.filter((m) => m.role === 'user')}
+        messages={messages.filter((m) => m.role === 'user' && !m.id?.includes('hidden-generation'))}
         chatStarted={true}
         isStreaming={isLoading}
         handleStop={stop}

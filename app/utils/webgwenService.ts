@@ -3,89 +3,114 @@ import type { ProjectModel } from '~/lib/persistence/models/project.model';
 
 export class WebGenService {
   generateWebsitePrompt(project: ProjectModel): string {
-    // validate required inputs
     if (!project?.description) {
       throw new Error('Project description is required');
     }
 
-    // build prompt sections
     const sections = [
+      this._buildIntroduction(),
       this._buildProjectOverview(project),
-      this._buildTechnicalSpecs(project, project.analysisResultModel.landing.selectedOptions),
+      this._buildTechnicalSpecs(project),
       this._buildBrandGuidelines(project.analysisResultModel.branding),
+      this._buildContentStrategy(),
+      this._buildDesignRequirements(),
       this._buildOutputRequirements(),
       this._buildQualityStandards(),
     ];
 
-    return sections.join('\n\n');
+    return sections.filter((section) => section).join('\n\n');
+  }
+
+  private _buildIntroduction(): string {
+    return `# LANDING PAGE CREATION BRIEF
+            **Objective:** Create a high-converting, modern landing page that aligns with the project requirements and brand identity. Follow current web design best practices for layout, performance, and user experience.`;
   }
 
   private _buildProjectOverview(project: ProjectModel): string {
     return `# PROJECT OVERVIEW
-            **Name:** ${project.name}
-            **Type:** ${project.type.toString().toUpperCase()}
-            **Description:** ${project.description}
-            **Target Audience:** ${project.targets}
-            **Key Constraints:**
-            ${project.constraints.map((c) => `- ${c}`).join('\n')}
-            **Team Size:** ${project.teamSize}
-            ${project.budgetIntervals ? `**Budget:** ${project.budgetIntervals}` : ''}`;
+**Name:** ${project.name}
+**Description:** ${project.description}
+**Target Audience:** ${project.targets || 'Not specified'}
+${project.constraints?.length ? `**Constraints:**\n${project.constraints.map((c) => `- ${c}`).join('\n')}` : ''}`;
   }
 
-  private _buildTechnicalSpecs(project: ProjectModel, options: any): string {
-    return `# TECHNICAL SPECIFICATIONS
-            **Framework:** ${options.stack.toUpperCase()}
-            **Core Features:**
-            - SEO: ${options.seoEnabled ? 'Advanced optimization' : 'Basic'}
-            - Contact Form: ${options.contactFormEnabled ? 'Included' : 'Excluded'}
-            - Analytics: ${options.analyticsEnabled ? 'Configured' : 'Not included'}
-            - i18n: ${options.i18nEnabled ? 'Multi-language support' : 'Single language'}
-            - Performance: ${options.performanceOptimized ? 'Optimized' : 'Standard'}
+  private _buildTechnicalSpecs(project: ProjectModel): string {
+    const options = project.analysisResultModel.landing.selectedOptions;
 
-            **Architecture Requirements:**
-            - ${project.type === 'web' ? 'Responsive design' : 'Platform-specific patterns'}
-            ${project.constraints}`;
+    return `# TECHNICAL SPECIFICATIONS
+**Framework:** ${options.stack.toUpperCase()}
+**Core Features:**
+- SEO: ${options.seoEnabled ? 'Advanced optimization' : 'Basic'}
+- Contact Form: ${options.contactFormEnabled ? 'Included' : 'Excluded'}
+- Analytics: ${options.analyticsEnabled ? 'Configured' : 'Not included'}
+- i18n: ${options.i18nEnabled ? 'Multi-language' : 'Single language'}
+- Performance: ${options.performanceOptimized ? 'Optimized' : 'Standard'}
+
+**Requirements:**
+- ${project.type === 'web' ? 'Mobile-first responsive design' : 'Platform-specific approach'}
+- Component-based architecture
+- TypeScript best practices`;
   }
 
   private _buildBrandGuidelines(brand: BrandIdentityModel): string {
     return `# BRAND GUIDELINES
-            **Visual Identity:**
-            - Colors: ${brand.colorSystem.summary}
-            - Typography: ${brand.typographySystem.summary}
-            - Logo Usage: ${brand.logo.content}...
+**Visual Identity:**
+- Colors: ${brand.colorSystem.summary}
+- Typography: ${brand.typographySystem.summary}
+${brand.logo?.content ? `- Logo: ${brand.logo.content}` : ''}
 
-            **Tone & Voice:**
-            ${brand.toneOfVoice.content.substring(0, 200)}...
+**Tone & Voice:**
+${brand.toneOfVoice?.content?.substring(0, 200) || 'Professional yet approachable'}`;
+  }
 
-            **Layout Principles:**
-            ${brand.layoutAndComposition.summary}`;
+  private _buildContentStrategy(): string {
+    return `# CONTENT STRATEGY
+**Structure:**
+1. Hero section with clear value proposition
+2. Key benefits/features
+3. Social proof
+4. Call-to-action
+
+**Guidelines:**
+- Concise, scannable content
+- Action-oriented language
+- Benefit-focused messaging`;
+  }
+
+  private _buildDesignRequirements(): string {
+    return `# DESIGN REQUIREMENTS
+**Principles:**
+- Clean, modern aesthetic
+- Strong visual hierarchy
+- Strategic white space
+- Consistent spacing system
+
+**Components:**
+- Responsive navigation
+- Attractive hero section
+- Clearly styled CTAs
+- Organized content sections`;
   }
 
   private _buildOutputRequirements(): string {
     return `# OUTPUT REQUIREMENTS
-            1. **Complete Source Code**:
-            - Component-based architecture
-            - Proper TypeScript typing
-            - Environment configuration
+**Code:**
+- Well-structured components
+- TypeScript typing
+- Environment configuration
 
-            2. **Documentation**:
-            - Setup instructions
-            - Style guide
-            - Component API references
-
-            3. **Design Tokens**:
-            - Color palette in JSON
-            - Typography scale
-            - Spacing system`;
+**Documentation:**
+- Setup instructions
+- Style guide reference
+- Component documentation`;
   }
 
   private _buildQualityStandards(): string {
     return `# QUALITY STANDARDS
-        - WCAG AA accessibility compliance
-        - Mobile-first responsive design
-        - Cross-browser compatibility
-        - Clean, linted code
-        - Comprehensive documentation
-        - Performance optimized assets`;
+- WCAG AA accessibility
+- Cross-browser compatibility
+- Mobile-responsive
+- Optimized performance
+- Clean, maintainable code`;
   }
 }
