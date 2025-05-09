@@ -51,18 +51,27 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     const fileModifications = workbenchStore.getFileModifcations();
     chatStore.setKey('aborted', false);
 
-    // Execute the generation directly without showing in chat
+    // Execute the generation directly to webcontainer
     if (fileModifications !== undefined) {
       const diff = fileModificationsToHTML(fileModifications);
-      await append({
-        role: 'system',
-        content: `${diff}\n\ngenerate app with the following prompt:\n${prompt}`,
+      await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          fileModifications: diff,
+        }),
       });
       workbenchStore.resetAllFileModifications();
     } else {
-      await append({
-        role: 'system',
-        content: `generate app with the following prompt:\n${prompt}`,
+      await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
       });
     }
   };
@@ -141,7 +150,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     <>
       <BaseChat
         ref={animationScope}
-        messages={messages.filter((m) => m.role === 'user' || m.role === 'assistant')}
+        messages={messages.filter((m) => m.role === 'user')}
         chatStarted={true}
         isStreaming={isLoading}
         handleStop={stop}
