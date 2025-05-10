@@ -1,4 +1,6 @@
 import { useStore } from '@nanostores/react';
+import { setMessages } from '~/lib/persistence/db';
+import { chatId } from '~/lib/persistence/useChatHistory';
 import type { Message } from 'ai';
 import { useChat } from 'ai/react';
 import { useAnimate } from 'framer-motion';
@@ -51,6 +53,12 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
       role: 'assistant',
       content: message,
     });
+
+    // Store messages in database
+    await setMessages(
+      projectId,
+      messages.map((message) => ({ ...message })),
+    );
   };
 
   const executeGeneration = async (prompt: string) => {
@@ -126,9 +134,9 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
   if (isLoadingProject) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-gradient-to-r from-gray-900 to-gray-700">
         <div className="flex flex-col items-center gap-4">
-          <div className="i-ph:circle-notch-bold text-4xl animate-spin text-accent-500" />
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           <p className="text-sm text-gray-500">Loading project...</p>
         </div>
       </div>

@@ -106,18 +106,22 @@ export async function setMessages(
   id: string,
   messages: Message[],
   urlId?: string,
-  description?: string,
 ): Promise<void> {
   try {
+    console.log('Saving messages to database:', {
+      id,
+      messages,
+      urlId,
+    });
     const chatDoc = doc(chatsCollection, id);
     await setDoc(chatDoc, {
       id,
       messages,
       urlId: urlId || id,
-      description,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    console.error('Error setting messages:', error);
     logger.error('Error setting messages:', error);
     throw error;
   }
