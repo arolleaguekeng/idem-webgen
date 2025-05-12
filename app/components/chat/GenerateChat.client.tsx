@@ -49,10 +49,10 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   const sendMessage = async (message: string) => {
     if (isLoading) return;
 
-    await append({
-      role: 'assistant',
-      content: message,
-    });
+    // await append({
+    //   role: 'assistant',
+    //   content: message,
+    // });
 
     // Store messages in database
     await setMessages(
@@ -102,14 +102,14 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
         if (!project) {
           throw new Error('Project not found');
         }
-
+        setIsLoadingProject(false);
         const prompt = webGenService.generateWebsitePrompt(project);
 
-        // Show the prompt in chat
-        await append({
-          role: 'user',
-          content: prompt,
-        });
+        // // Show the prompt in chat
+        // await append({
+        //   role: 'user',
+        //   content: prompt,
+        // });
 
         // Execute generation directly
         await executeGeneration(prompt);
@@ -134,7 +134,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
   if (isLoadingProject) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gradient-to-r from-gray-900 to-gray-700">
+      <div className="flex h-screen items-center justify-center bg-gradient-to-r from-[#111827] to-[#1f2937]">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           <p className="text-sm text-gray-500">Loading project...</p>
