@@ -8,6 +8,15 @@ import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
 import { useEffect, useState } from 'react';
 import { currentUser } from '~/lib/persistence/db';
 
+const getProxiedImageUrl = (url: string) => {
+  if (!url) return '';
+  // Use a data URL for Google profile pictures to avoid CORS
+  if (url.includes('googleusercontent.com')) {
+    return url.replace('s96-c', 's96-c-rw');
+  }
+  return url;
+};
+
 export function Header() {
   const chat = useStore(chatStore);
   const open = useStore(menuStore);
@@ -48,9 +57,10 @@ export function Header() {
         <div onClick={() => setDropdownOpen(!dropdownOpen)}>
           {user?.photoURL ? (
             <img
-              src={user.photoURL}
+              src={getProxiedImageUrl(user.photoURL)}
               alt={user.displayName || 'Profile'}
               className="w-10 h-10 rounded-full cursor-pointer"
+              crossOrigin="anonymous"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer text-gray-300">
@@ -68,7 +78,7 @@ export function Header() {
           <a href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
             Settings
           </a>
-          <button className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Sign out</button>
+          <button className="w-full text-left px-4 py-2 bg-primary-500 text-sm text-primary-500 hover:bg-primary-700" onClick={() => signOut(auth)}>Sign out</button>
         </div>
       </div>
     </header>
