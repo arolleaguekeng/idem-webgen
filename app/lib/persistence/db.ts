@@ -61,19 +61,31 @@ async function checkAuth(): Promise<void> {
 
 export async function getCurrentUser(): Promise<UserModel | null> {
   try {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) return null;
+
     const response = await fetch('http://localhost:3000/api/profile', {
       credentials: 'include',
     });
 
     if (!response.ok) {
-      // window.location = 'http://localhost:4200/login';
-      return null;
+      return {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        displayName: firebaseUser.displayName || '',
+        photoURL: firebaseUser.photoURL || '',
+        subscription: 'free',
+        createdAt: firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime) : new Date(),
+        lastLogin: firebaseUser.metadata.lastSignInTime ? new Date(firebaseUser.metadata.lastSignInTime) : new Date(),
+      };
     }
 
     const user = (await response.json()) as UserModel;
-    console.log('CurrentUser', user);
-
-    return user;
+    return {
+      ...user,
+      uid: firebaseUser.uid,
+      photoURL: firebaseUser.photoURL || user.photoURL || '',
+    };
   } catch (error) {
     console.error('Error fetching user:', error);
     return null;
