@@ -2,6 +2,7 @@ import type { Message } from 'ai';
 import React, { type RefCallback } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '~/components/sidebar/Menu.client';
+import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
 import { IconButton } from '~/components/ui/IconButton';
 import { Workbench } from '~/components/workbench/Workbench.client';
 import { classNames } from '~/utils/classNames';
@@ -28,11 +29,11 @@ interface BaseChatProps {
 }
 
 const EXAMPLE_PROMPTS = [
-  { text: 'Build a todo app in React using Tailwind' },
-  { text: 'Build a simple blog using Astro' },
-  { text: 'Create a cookie consent form using Material UI' },
-  { text: 'Make a space invaders game' },
-  { text: 'How do I center a div?' },
+  { text: 'Create a microcredit management system' },
+  { text: 'Develop an e-commerce platform for local artisans' },
+  { text: 'Design a mobile health app for rural areas' },
+  { text: 'Website to promote local tourism' },
+  { text: 'Digital solution to track agricultural product prices' },
 ];
 
 const TEXTAREA_MIN_HEIGHT = 76;
@@ -62,13 +63,17 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     return (
       <div
         ref={ref}
-        className={classNames(
-          styles.BaseChat,
-          'relative flex h-full w-full overflow-hidden bg-lexi-elements-background-depth-1',
-        )}
+        className={classNames(styles.BaseChat, 'relative flex h-full w-full overflow-hidden')}
         data-chat-visible={showChat}
       >
-        <ClientOnly>{() => <Menu />}</ClientOnly>
+        <ClientOnly>
+          {() => (
+            <div className="flex items-center gap-2">
+              <Menu />
+              <ThemeSwitch />
+            </div>
+          )}
+        </ClientOnly>
         <div ref={scrollRef} className="flex overflow-y-auto w-full h-full">
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow min-w-[var(--chat-min-width)] h-full')}>
             {!chatStarted && (
@@ -181,7 +186,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                     ) : null}
                   </div>
                 </div>
-                <div className="bg-lexi-elements-background-depth-1 pb-6">{/* Ghost Element */}</div>
+                <div className="bg- pb-6">{/* Ghost Element */}</div>
               </div>
             </div>
             {!chatStarted && (
