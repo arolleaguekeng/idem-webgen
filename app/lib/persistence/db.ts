@@ -32,7 +32,6 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-console.log('config', firebaseConfig);
 
 // initialisation de Firebase
 const app = initializeApp(firebaseConfig);
@@ -61,38 +60,26 @@ async function checkAuth(): Promise<void> {
 
 export async function getCurrentUser(): Promise<UserModel | null> {
   try {
-    const firebaseUser = auth.currentUser;
-    if (!firebaseUser) return null;
 
     const response = await fetch('http://localhost:3000/api/profile', {
       credentials: 'include',
     });
 
     if (!response.ok) {
-      return {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email || '',
-        displayName: firebaseUser.displayName || '',
-        photoURL: firebaseUser.photoURL || '',
-        subscription: 'free',
-        createdAt: firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime) : new Date(),
-        lastLogin: firebaseUser.metadata.lastSignInTime ? new Date(firebaseUser.metadata.lastSignInTime) : new Date(),
-      };
+      // window.location = 'http://localhost:4200/login';
+      return null;
     }
 
     const user = (await response.json()) as UserModel;
-    return {
-      ...user,
-      uid: firebaseUser.uid,
-      photoURL: firebaseUser.photoURL || user.photoURL || '',
-    };
+
+    return user;
   } catch (error) {
     console.error('Error fetching user:', error);
     return null;
   }
 }
 
-const currentUser = await getCurrentUser();
+export const currentUser = await getCurrentUser();
 
 // référence à la collection 'chats'
 const chatsCollection = collection(db, `users/${currentUser?.uid}/chats`);
@@ -114,11 +101,7 @@ export async function getAll(): Promise<ChatHistoryItem[]> {
   }
 }
 
-export async function setMessages(
-  id: string,
-  messages: Message[],
-  urlId?: string,
-): Promise<void> {
+export async function setMessages(id: string, messages: Message[], urlId?: string): Promise<void> {
   try {
     console.log('Saving messages to database:', {
       id,

@@ -4,10 +4,9 @@ import { chatStore } from '~/lib/stores/chat';
 import { menuStore } from '~/lib/stores/menu';
 import { userStore } from '~/lib/stores/user';
 import { classNames } from '~/utils/classNames';
-import { HeaderActionButtons } from './HeaderActionButtons.client';
 import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
 import { useEffect, useState } from 'react';
-import { getCurrentUser } from '~/lib/persistence/db';
+import { currentUser } from '~/lib/persistence/db';
 
 export function Header() {
   const chat = useStore(chatStore);
@@ -16,7 +15,7 @@ export function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
-    getCurrentUser().then((user) => userStore.set(user));
+    userStore.set(currentUser);
   }, []);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export function Header() {
     <header
       className={classNames('flex items-center mt-[1px] p-10 h-[var(--header-height)]', {
         'ml-[280px]': open,
-        'ml-6': !open
+        'ml-6': !open,
       })}
     >
       <div className="flex-1 flex items-center gap-4 z-logo text-gray-200">
