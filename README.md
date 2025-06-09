@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="../public/assets/icons/logo_white.png" alt="Idem Logo" width="200">
+  <img src="public/assets/icons/logo_white.png" alt="Idem Logo" width="200">
   <p><strong>AI-Powered Web Application Generator</strong></p>
 </div>
 
