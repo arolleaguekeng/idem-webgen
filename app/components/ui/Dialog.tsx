@@ -52,11 +52,11 @@ export const DialogButton = memo(({ type, children, onClick }: DialogButtonProps
       className={classNames(
         'inline-flex h-[35px] items-center justify-center rounded-lg px-4 text-sm leading-none focus:outline-none',
         {
-          'bg-lexi-elements-button-primary-background text-lexi-elements-button-primary-text hover:bg-lexi-elements-button-primary-backgroundHover':
+          'bg-idem-elements-button-primary-background text-idem-elements-button-primary-text hover:bg-idem-elements-button-primary-backgroundHover':
             type === 'primary',
-          'bg-lexi-elements-button-secondary-background text-lexi-elements-button-secondary-text hover:bg-lexi-elements-button-secondary-backgroundHover':
+          'bg-idem-elements-button-secondary-background text-idem-elements-button-secondary-text hover:bg-idem-elements-button-secondary-backgroundHover':
             type === 'secondary',
-          'bg-lexi-elements-button-danger-background text-lexi-elements-button-danger-text hover:bg-lexi-elements-button-danger-backgroundHover':
+          'bg-idem-elements-button-danger-background text-idem-elements-button-danger-text hover:bg-idem-elements-button-danger-backgroundHover':
             type === 'danger',
         },
       )}
@@ -71,7 +71,7 @@ export const DialogTitle = memo(({ className, children, ...props }: RadixDialog.
   return (
     <RadixDialog.Title
       className={classNames(
-        'px-5 py-4 flex items-center justify-between border-b border-lexi-elements-borderColor text-lg font-semibold leading-6 text-lexi-elements-textPrimary',
+        'px-5 py-4 flex items-center justify-between border-b border-idem-elements-borderColor text-lg font-semibold leading-6 text-idem-elements-textPrimary',
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ export const DialogTitle = memo(({ className, children, ...props }: RadixDialog.
 export const DialogDescription = memo(({ className, children, ...props }: RadixDialog.DialogDescriptionProps) => {
   return (
     <RadixDialog.Description
-      className={classNames('px-5 py-4 text-lexi-elements-textPrimary text-md', className)}
+      className={classNames('px-5 py-4 text-idem-elements-textPrimary text-md', className)}
       {...props}
     >
       {children}
@@ -114,7 +114,7 @@ export const Dialog = memo(({ className, children, onBackdrop, onClose }: Dialog
       <RadixDialog.Content asChild>
         <motion.div
           className={classNames(
-            'fixed top-[50%] left-[50%] z-max max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] border border-lexi-elements-borderColor rounded-lg bg-lexi-elements-background-depth-2 shadow-lg focus:outline-none overflow-hidden',
+            'fixed top-[50%] left-[50%] z-max max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] border border-idem-elements-borderColor rounded-lg bg-idem-elements-background-depth-2 shadow-lg focus:outline-none overflow-hidden',
             className,
           )}
           initial="closed"

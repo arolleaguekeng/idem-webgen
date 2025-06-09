@@ -127,7 +127,7 @@ export const EditorPanel = memo(
         <Panel defaultSize={showTerminal ? DEFAULT_EDITOR_SIZE : 100} minSize={20}>
           <PanelGroup direction="horizontal">
             <Panel defaultSize={20} minSize={10} collapsible>
-              <div className="flex flex-col border-r border-lexi-elements-borderColor h-full">
+              <div className="flex flex-col border-r border-idem-elements-borderColor h-full">
                 <PanelHeader>
                   <div className="i-ph:tree-structure-duotone shrink-0" />
                   Files
@@ -197,8 +197,8 @@ export const EditorPanel = memo(
           }}
         >
           <div className="h-full">
-            <div className="bg-lexi-elements-terminals-background h-full flex flex-col">
-              <div className="flex items-center bg-lexi-elements-background-depth-2 border-y border-lexi-elements-borderColor gap-1.5 min-h-[34px] p-2">
+            <div className="bg-idem-elements-terminals-background h-full flex flex-col">
+              <div className="flex items-center bg-idem-elements-background-depth-2 border-y border-idem-elements-borderColor gap-1.5 min-h-[34px] p-2">
                 {Array.from({ length: terminalCount }, (_, index) => {
                   const isActive = activeTerminal === index;
 
@@ -208,8 +208,8 @@ export const EditorPanel = memo(
                       className={classNames(
                         'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
                         {
-                          'bg-lexi-elements-terminals-buttonBackground text-lexi-elements-textPrimary': isActive,
-                          'bg-lexi-elements-background-depth-2 text-lexi-elements-textSecondary hover:bg-lexi-elements-terminals-buttonBackground':
+                          'bg-idem-elements-terminals-buttonBackground text-idem-elements-textPrimary': isActive,
+                          'bg-idem-elements-background-depth-2 text-idem-elements-textSecondary hover:bg-idem-elements-terminals-buttonBackground':
                             !isActive,
                         },
                       )}

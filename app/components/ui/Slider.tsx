@@ -24,7 +24,7 @@ export const Slider = genericMemo(<T,>({ selected, options, setSelected }: Slide
   const isLeftSelected = selected === options.left.value;
 
   return (
-    <div className="flex items-center flex-wrap shrink-0 gap-1 bg-lexi-elements-background-depth-1 overflow-hidden rounded-full p-1">
+    <div className="flex items-center flex-wrap shrink-0 gap-1 bg-idem-elements-background-depth-1 overflow-hidden rounded-full p-1">
       <SliderButton selected={isLeftSelected} setSelected={() => setSelected?.(options.left.value)}>
         {options.left.text}
       </SliderButton>
@@ -48,8 +48,8 @@ const SliderButton = memo(({ selected, children, setSelected }: SliderButtonProp
       className={classNames(
         'bg-transparent text-sm px-2.5 py-0.5 rounded-full relative',
         selected
-          ? 'text-lexi-elements-item-contentAccent'
-          : 'text-lexi-elements-item-contentDefault hover:text-lexi-elements-item-contentActive',
+          ? 'text-idem-elements-item-contentAccent'
+          : 'text-idem-elements-item-contentDefault hover:text-idem-elements-item-contentActive',
       )}
     >
       <span className="relative z-10">{children}</span>
@@ -57,7 +57,7 @@ const SliderButton = memo(({ selected, children, setSelected }: SliderButtonProp
         <motion.span
           layoutId="pill-tab"
           transition={{ duration: 0.2, ease: cubicEasingFn }}
-          className="absolute inset-0 z-0 bg-lexi-elements-item-backgroundAccent rounded-full"
+          className="absolute inset-0 z-0 bg-idem-elements-item-backgroundAccent rounded-full"
         ></motion.span>
       )}
     </button>

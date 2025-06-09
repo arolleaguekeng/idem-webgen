@@ -106,7 +106,7 @@ export function Menu() {
               href="/"
               className="flex gap-2 items-center text-gray-200 hover:bg-gray-700 rounded-md p-2 transition-all duration-200"
             >
-              <span className="inline-block i-lexi:chat scale-110" />
+              <span className="inline-block i-idem:chat scale-110" />
               Start new chat
             </a>
           </div>
@@ -138,7 +138,7 @@ export function Menu() {
                         <p className="mt-1">Are you sure you want to delete this chat?</p>
                       </div>
                     </DialogDescription>
-                    <div className="px-5 pb-4 bg-lexi-elements-background-depth-2 flex gap-2 justify-end">
+                    <div className="px-5 pb-4 bg-idem-elements-background-depth-2 flex gap-2 justify-end">
                       <DialogButton type="secondary" onClick={closeDialog}>
                         Cancel
                       </DialogButton>

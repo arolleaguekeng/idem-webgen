@@ -13,7 +13,7 @@ $code-font-size: 13px;
 
 .MarkdownContent {
   line-height: 1.6;
-  color: var(--lexi-elements-textPrimary);
+  color: var(--idem-elements-textPrimary);
 
   > *:not(:last-child) {
     margin-block-end: 16px;
@@ -29,19 +29,19 @@ $code-font-size: 13px;
       margin-block-end: 16px;
       font-weight: 600;
       line-height: 1.25;
-      color: var(--lexi-elements-textPrimary);
+      color: var(--idem-elements-textPrimary);
     }
   }
 
   h1 {
     font-size: 2em;
-    border-bottom: 1px solid var(--lexi-elements-borderColor);
+    border-bottom: 1px solid var(--idem-elements-borderColor);
     padding-bottom: 0.3em;
   }
 
   h2 {
     font-size: 1.5em;
-    border-bottom: 1px solid var(--lexi-elements-borderColor);
+    border-bottom: 1px solid var(--idem-elements-borderColor);
     padding-bottom: 0.3em;
   }
 
@@ -72,7 +72,7 @@ $code-font-size: 13px;
   }
 
   a {
-    color: var(--lexi-elements-messages-linkColor);
+    color: var(--idem-elements-messages-linkColor);
     text-decoration: none;
     cursor: pointer;
 
@@ -88,8 +88,8 @@ $code-font-size: 13px;
     @include not-inside-actions {
       border-radius: 6px;
       padding: 0.2em 0.4em;
-      background-color: var(--lexi-elements-messages-inlineCode-background);
-      color: var(--lexi-elements-messages-inlineCode-text);
+      background-color: var(--idem-elements-messages-inlineCode-background);
+      color: var(--idem-elements-messages-inlineCode-text);
     }
   }
 
@@ -109,8 +109,8 @@ $code-font-size: 13px;
   blockquote {
     margin: 0;
     padding: 0 1em;
-    color: var(--lexi-elements-textTertiary);
-    border-left: 0.25em solid var(--lexi-elements-borderColor);
+    color: var(--idem-elements-textTertiary);
+    border-left: 0.25em solid var(--idem-elements-borderColor);
   }
 
   :is(ul, ol) {
@@ -154,7 +154,7 @@ $code-font-size: 13px;
     height: 0.25em;
     padding: 0;
     margin: 24px 0;
-    background-color: var(--lexi-elements-borderColor);
+    background-color: var(--idem-elements-borderColor);
     border: 0;
   }
 

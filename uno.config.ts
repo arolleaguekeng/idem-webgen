@@ -5,7 +5,7 @@ import { defineConfig, presetIcons, presetUno, transformerDirectives } from 'uno
 
 const iconPaths = globSync('./icons/*.svg');
 
-const collectionName = 'lexi';
+const collectionName = 'idem';
 
 const customIconCollection = iconPaths.reduce(
   (acc, iconPath) => {
@@ -99,9 +99,9 @@ const COLOR_PRIMITIVES = {
 
 export default defineConfig({
   shortcuts: {
-    'lexi-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
-    'transition-theme': 'transition-[background-color,border-color,color] duration-150 lexi-ease-cubic-bezier',
-    kdb: 'bg-lexi-elements-code-background text-lexi-elements-code-text py-1 px-1.5 rounded-md',
+    'idem-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
+    'transition-theme': 'transition-[background-color,border-color,color] duration-150 idem-ease-cubic-bezier',
+    kdb: 'bg-idem-elements-code-background text-idem-elements-code-text py-1 px-1.5 rounded-md',
     'max-w-chat': 'max-w-[var(--chat-max-width)]',
   },
   rules: [
@@ -114,115 +114,115 @@ export default defineConfig({
   theme: {
     colors: {
       ...COLOR_PRIMITIVES,
-      lexi: {
+      idem: {
         elements: {
-          borderColor: 'var(--lexi-elements-borderColor)',
-          borderColorActive: 'var(--lexi-elements-borderColorActive)',
+          borderColor: 'var(--idem-elements-borderColor)',
+          borderColorActive: 'var(--idem-elements-borderColorActive)',
           background: {
             depth: {
-              1: 'var(--lexi-elements-bg-depth-1)',
-              2: 'var(--lexi-elements-bg-depth-2)',
-              3: 'var(--lexi-elements-bg-depth-3)',
-              4: 'var(--lexi-elements-bg-depth-4)',
+              1: 'var(--idem-elements-bg-depth-1)',
+              2: 'var(--idem-elements-bg-depth-2)',
+              3: 'var(--idem-elements-bg-depth-3)',
+              4: 'var(--idem-elements-bg-depth-4)',
             },
           },
-          textPrimary: 'var(--lexi-elements-textPrimary)',
-          textSecondary: 'var(--lexi-elements-textSecondary)',
-          textTertiary: 'var(--lexi-elements-textTertiary)',
+          textPrimary: 'var(--idem-elements-textPrimary)',
+          textSecondary: 'var(--idem-elements-textSecondary)',
+          textTertiary: 'var(--idem-elements-textTertiary)',
           code: {
-            background: 'var(--lexi-elements-code-background)',
-            text: 'var(--lexi-elements-code-text)',
+            background: 'var(--idem-elements-code-background)',
+            text: 'var(--idem-elements-code-text)',
           },
           button: {
             primary: {
-              background: 'var(--lexi-elements-button-primary-background)',
-              backgroundHover: 'var(--lexi-elements-button-primary-backgroundHover)',
-              text: 'var(--lexi-elements-button-primary-text)',
+              background: 'var(--idem-elements-button-primary-background)',
+              backgroundHover: 'var(--idem-elements-button-primary-backgroundHover)',
+              text: 'var(--idem-elements-button-primary-text)',
             },
             secondary: {
-              background: 'var(--lexi-elements-button-secondary-background)',
-              backgroundHover: 'var(--lexi-elements-button-secondary-backgroundHover)',
-              text: 'var(--lexi-elements-button-secondary-text)',
+              background: 'var(--idem-elements-button-secondary-background)',
+              backgroundHover: 'var(--idem-elements-button-secondary-backgroundHover)',
+              text: 'var(--idem-elements-button-secondary-text)',
             },
             danger: {
-              background: 'var(--lexi-elements-button-danger-background)',
-              backgroundHover: 'var(--lexi-elements-button-danger-backgroundHover)',
-              text: 'var(--lexi-elements-button-danger-text)',
+              background: 'var(--idem-elements-button-danger-background)',
+              backgroundHover: 'var(--idem-elements-button-danger-backgroundHover)',
+              text: 'var(--idem-elements-button-danger-text)',
             },
           },
           item: {
-            contentDefault: 'var(--lexi-elements-item-contentDefault)',
-            contentActive: 'var(--lexi-elements-item-contentActive)',
-            contentAccent: 'var(--lexi-elements-item-contentAccent)',
-            contentDanger: 'var(--lexi-elements-item-contentDanger)',
-            backgroundDefault: 'var(--lexi-elements-item-backgroundDefault)',
-            backgroundActive: 'var(--lexi-elements-item-backgroundActive)',
-            backgroundAccent: 'var(--lexi-elements-item-backgroundAccent)',
-            backgroundDanger: 'var(--lexi-elements-item-backgroundDanger)',
+            contentDefault: 'var(--idem-elements-item-contentDefault)',
+            contentActive: 'var(--idem-elements-item-contentActive)',
+            contentAccent: 'var(--idem-elements-item-contentAccent)',
+            contentDanger: 'var(--idem-elements-item-contentDanger)',
+            backgroundDefault: 'var(--idem-elements-item-backgroundDefault)',
+            backgroundActive: 'var(--idem-elements-item-backgroundActive)',
+            backgroundAccent: 'var(--idem-elements-item-backgroundAccent)',
+            backgroundDanger: 'var(--idem-elements-item-backgroundDanger)',
           },
           actions: {
-            background: 'var(--lexi-elements-actions-background)',
+            background: 'var(--idem-elements-actions-background)',
             code: {
-              background: 'var(--lexi-elements-actions-code-background)',
+              background: 'var(--idem-elements-actions-code-background)',
             },
           },
           artifacts: {
-            background: 'var(--lexi-elements-artifacts-background)',
-            backgroundHover: 'var(--lexi-elements-artifacts-backgroundHover)',
-            borderColor: 'var(--lexi-elements-artifacts-borderColor)',
+            background: 'var(--idem-elements-artifacts-background)',
+            backgroundHover: 'var(--idem-elements-artifacts-backgroundHover)',
+            borderColor: 'var(--idem-elements-artifacts-borderColor)',
             inlineCode: {
-              background: 'var(--lexi-elements-artifacts-inlineCode-background)',
-              text: 'var(--lexi-elements-artifacts-inlineCode-text)',
+              background: 'var(--idem-elements-artifacts-inlineCode-background)',
+              text: 'var(--idem-elements-artifacts-inlineCode-text)',
             },
           },
           messages: {
-            background: 'var(--lexi-elements-messages-background)',
-            linkColor: 'var(--lexi-elements-messages-linkColor)',
+            background: 'var(--idem-elements-messages-background)',
+            linkColor: 'var(--idem-elements-messages-linkColor)',
             code: {
-              background: 'var(--lexi-elements-messages-code-background)',
+              background: 'var(--idem-elements-messages-code-background)',
             },
             inlineCode: {
-              background: 'var(--lexi-elements-messages-inlineCode-background)',
-              text: 'var(--lexi-elements-messages-inlineCode-text)',
+              background: 'var(--idem-elements-messages-inlineCode-background)',
+              text: 'var(--idem-elements-messages-inlineCode-text)',
             },
           },
           icon: {
-            success: 'var(--lexi-elements-icon-success)',
-            error: 'var(--lexi-elements-icon-error)',
-            primary: 'var(--lexi-elements-icon-primary)',
-            secondary: 'var(--lexi-elements-icon-secondary)',
-            tertiary: 'var(--lexi-elements-icon-tertiary)',
+            success: 'var(--idem-elements-icon-success)',
+            error: 'var(--idem-elements-icon-error)',
+            primary: 'var(--idem-elements-icon-primary)',
+            secondary: 'var(--idem-elements-icon-secondary)',
+            tertiary: 'var(--idem-elements-icon-tertiary)',
           },
           preview: {
             addressBar: {
-              background: 'var(--lexi-elements-preview-addressBar-background)',
-              backgroundHover: 'var(--lexi-elements-preview-addressBar-backgroundHover)',
-              backgroundActive: 'var(--lexi-elements-preview-addressBar-backgroundActive)',
-              text: 'var(--lexi-elements-preview-addressBar-text)',
-              textActive: 'var(--lexi-elements-preview-addressBar-textActive)',
+              background: 'var(--idem-elements-preview-addressBar-background)',
+              backgroundHover: 'var(--idem-elements-preview-addressBar-backgroundHover)',
+              backgroundActive: 'var(--idem-elements-preview-addressBar-backgroundActive)',
+              text: 'var(--idem-elements-preview-addressBar-text)',
+              textActive: 'var(--idem-elements-preview-addressBar-textActive)',
             },
           },
           terminals: {
-            background: 'var(--lexi-elements-terminals-background)',
-            buttonBackground: 'var(--lexi-elements-terminals-buttonBackground)',
+            background: 'var(--idem-elements-terminals-background)',
+            buttonBackground: 'var(--idem-elements-terminals-buttonBackground)',
           },
-          dividerColor: 'var(--lexi-elements-dividerColor)',
+          dividerColor: 'var(--idem-elements-dividerColor)',
           loader: {
-            background: 'var(--lexi-elements-loader-background)',
-            progress: 'var(--lexi-elements-loader-progress)',
+            background: 'var(--idem-elements-loader-background)',
+            progress: 'var(--idem-elements-loader-progress)',
           },
           prompt: {
-            background: 'var(--lexi-elements-prompt-background)',
+            background: 'var(--idem-elements-prompt-background)',
           },
           sidebar: {
-            dropdownShadow: 'var(--lexi-elements-sidebar-dropdownShadow)',
-            buttonBackgroundDefault: 'var(--lexi-elements-sidebar-buttonBackgroundDefault)',
-            buttonBackgroundHover: 'var(--lexi-elements-sidebar-buttonBackgroundHover)',
-            buttonText: 'var(--lexi-elements-sidebar-buttonText)',
+            dropdownShadow: 'var(--idem-elements-sidebar-dropdownShadow)',
+            buttonBackgroundDefault: 'var(--idem-elements-sidebar-buttonBackgroundDefault)',
+            buttonBackgroundHover: 'var(--idem-elements-sidebar-buttonBackgroundHover)',
+            buttonText: 'var(--idem-elements-sidebar-buttonText)',
           },
           cta: {
-            background: 'var(--lexi-elements-cta-background)',
-            text: 'var(--lexi-elements-cta-text)',
+            background: 'var(--idem-elements-cta-background)',
+            text: 'var(--idem-elements-cta-text)',
           },
         },
       },

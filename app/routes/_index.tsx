@@ -6,8 +6,8 @@ import { Header } from '~/components/header/Header';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Lexi Webgen' },
-    { name: 'description', content: 'Describe Your Project, and Lexi Generates Everything' },
+    { title: 'Idem Webgen' },
+    { name: 'description', content: 'Describe Your Project, and Idem Generates Everything' },
   ];
 };
 

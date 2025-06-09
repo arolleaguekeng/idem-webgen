@@ -1,17 +1,17 @@
 .Toastify__toast {
   --at-apply: shadow-md;
 
-  background-color: var(--lexi-elements-bg-depth-2);
-  color: var(--lexi-elements-textPrimary);
-  border: 1px solid var(--lexi-elements-borderColor);
+  background-color: var(--idem-elements-bg-depth-2);
+  color: var(--idem-elements-textPrimary);
+  border: 1px solid var(--idem-elements-borderColor);
 }
 
 .Toastify__close-button {
-  color: var(--lexi-elements-item-contentDefault);
+  color: var(--idem-elements-item-contentDefault);
   opacity: 1;
   transition: none;
 
   &:hover {
-    color: var(--lexi-elements-item-contentActive);
+    color: var(--idem-elements-item-contentActive);
   }
 }

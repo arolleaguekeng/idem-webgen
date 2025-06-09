@@ -170,10 +170,10 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
         icon={({ type }) => {
           switch (type) {
             case 'success': {
-              return <div className="i-ph:check-bold text-lexi-elements-icon-success text-2xl" />;
+              return <div className="i-ph:check-bold text-idem-elements-icon-success text-2xl" />;
             }
             case 'error': {
-              return <div className="i-ph:warning-circle-bold text-lexi-elements-icon-error text-2xl" />;
+              return <div className="i-ph:warning-circle-bold text-idem-elements-icon-error text-2xl" />;
             }
           }
           return undefined;

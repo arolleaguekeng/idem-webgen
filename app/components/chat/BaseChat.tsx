@@ -78,10 +78,10 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow min-w-[var(--chat-min-width)] h-full')}>
             {!chatStarted && (
               <div id="intro" className="mt-[26vh] max-w-chat mx-auto">
-                <h1 className="text-5xl text-center font-bold text-lexi-elements-textPrimary mb-2">
+                <h1 className="text-5xl text-center font-bold text-idem-elements-textPrimary mb-2">
                   Where ideas begin
                 </h1>
-                <p className="mb-4 text-center text-lexi-elements-textSecondary">
+                <p className="mb-4 text-center text-idem-elements-textSecondary">
                   Bring ideas to life in seconds or get help on existing projects.
                 </p>
               </div>
@@ -110,12 +110,12 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               >
                 <div
                   className={classNames(
-                    'shadow-sm border border-lexi-elements-borderColor bg-lexi-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',
+                    'shadow-sm border border-idem-elements-borderColor bg-idem-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',
                   )}
                 >
                   <textarea
                     ref={textareaRef}
-                    className={`w-full pl-4 pt-4 pr-16 focus:outline-none resize-none text-md text-lexi-elements-textPrimary placeholder-lexi-elements-textTertiary bg-transparent`}
+                    className={`w-full pl-4 pt-4 pr-16 focus:outline-none resize-none text-md text-idem-elements-textPrimary placeholder-idem-elements-textTertiary bg-transparent`}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         if (event.shiftKey) {
@@ -135,7 +135,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       minHeight: TEXTAREA_MIN_HEIGHT,
                       maxHeight: TEXTAREA_MAX_HEIGHT,
                     }}
-                    placeholder="How can Lexi help you today?"
+                    placeholder="How can Idem help you today?"
                     translate="no"
                   />
                   <ClientOnly>
@@ -161,26 +161,26 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         disabled={input.length === 0 || enhancingPrompt}
                         className={classNames({
                           'opacity-100!': enhancingPrompt,
-                          'text-lexi-elements-item-contentAccent! pr-1.5 enabled:hover:bg-lexi-elements-item-backgroundAccent!':
+                          'text-idem-elements-item-contentAccent! pr-1.5 enabled:hover:bg-idem-elements-item-backgroundAccent!':
                             promptEnhanced,
                         })}
                         onClick={() => enhancePrompt?.()}
                       >
                         {enhancingPrompt ? (
                           <>
-                            <div className="i-svg-spinners:90-ring-with-bg text-lexi-elements-loader-progress text-xl"></div>
+                            <div className="i-svg-spinners:90-ring-with-bg text-idem-elements-loader-progress text-xl"></div>
                             <div className="ml-1.5">Enhancing prompt...</div>
                           </>
                         ) : (
                           <>
-                            <div className="i-lexi:stars text-xl"></div>
+                            <div className="i-idem:stars text-xl"></div>
                             {promptEnhanced && <div className="ml-1.5">Prompt enhanced</div>}
                           </>
                         )}
                       </IconButton>
                     </div>
                     {input.length > 3 ? (
-                      <div className="text-xs text-lexi-elements-textTertiary">
+                      <div className="text-xs text-idem-elements-textTertiary">
                         Use <kbd className="kdb">Shift</kbd> + <kbd className="kdb">Return</kbd> for a new line
                       </div>
                     ) : null}
@@ -199,7 +199,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         onClick={(event) => {
                           sendMessage?.(event, examplePrompt.text);
                         }}
-                        className="group flex items-center w-full gap-2 justify-center bg-transparent text-lexi-elements-textTertiary hover:text-lexi-elements-textPrimary transition-theme"
+                        className="group flex items-center w-full gap-2 justify-center bg-transparent text-idem-elements-textTertiary hover:text-idem-elements-textPrimary transition-theme"
                       >
                         {examplePrompt.text}
                         <div className="i-ph:arrow-bend-down-left" />

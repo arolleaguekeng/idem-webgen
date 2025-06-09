@@ -47,7 +47,7 @@ export function Header() {
     >
       <div className="flex-1 flex items-center gap-4 z-logo text-gray-200">
         <div>
-          <h1 className="text-4xl font-bold">LEXI WEBGEN</h1>
+          <h1 className="text-4xl font-bold">IDEM WEBGEN</h1>
         </div>
         <div className="flex-1 px-4 text-center">
           <ClientOnly>{() => <ChatDescription />}</ClientOnly>
@@ -78,7 +78,12 @@ export function Header() {
           <a href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
             Settings
           </a>
-          <button className="w-full text-left px-4 py-2 bg-primary-500 text-sm text-primary-500 hover:bg-primary-700" onClick={() => signOut(auth)}>Sign out</button>
+          <button
+            className="w-full text-left px-4 py-2 bg-primary-500 text-sm text-primary-500 hover:bg-primary-700"
+            onClick={() => {}}
+          >
+            Sign out
+          </button>
         </div>
       </div>
     </header>

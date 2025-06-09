@@ -28,7 +28,7 @@ describe('StreamingMessageParser', () => {
       ['Foo bar <', 'Foo bar '],
       ['Foo bar <p', 'Foo bar <p'],
       [['Foo bar <', 's', 'p', 'an>some text</span>'], 'Foo bar <span>some text</span>'],
-    ])('should correctly parse chunks and strip out lexi artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out idem artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -38,13 +38,13 @@ describe('StreamingMessageParser', () => {
       ['Foo bar <b', 'Foo bar '],
       ['Foo bar <ba', 'Foo bar <ba'],
       ['Foo bar <bol', 'Foo bar '],
-      ['Foo bar <lexi', 'Foo bar '],
-      ['Foo bar <lexia', 'Foo bar <lexia'],
-      ['Foo bar <lexiA', 'Foo bar '],
-      ['Foo bar <lexiArtifacs></lexiArtifact>', 'Foo bar <lexiArtifacs></lexiArtifact>'],
-      ['Before <oltArtfiact>foo</lexiArtifact> After', 'Before <oltArtfiact>foo</lexiArtifact> After'],
-      ['Before <lexiArtifactt>foo</lexiArtifact> After', 'Before <lexiArtifactt>foo</lexiArtifact> After'],
-    ])('should correctly parse chunks and strip out lexi artifacts (%#)', (input, expected) => {
+      ['Foo bar <idem', 'Foo bar '],
+      ['Foo bar <idema', 'Foo bar <idema'],
+      ['Foo bar <idemA', 'Foo bar '],
+      ['Foo bar <idemArtifacs></idemArtifact>', 'Foo bar <idemArtifacs></idemArtifact>'],
+      ['Before <oltArtfiact>foo</idemArtifact> After', 'Before <oltArtfiact>foo</idemArtifact> After'],
+      ['Before <idemArtifactt>foo</idemArtifact> After', 'Before <idemArtifactt>foo</idemArtifact> After'],
+    ])('should correctly parse chunks and strip out idem artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -52,14 +52,14 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts without actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Some text before <lexiArtifact title="Some title" id="artifact_1">foo bar</lexiArtifact> Some more text',
+        'Some text before <idemArtifact title="Some title" id="artifact_1">foo bar</idemArtifact> Some more text',
         {
           output: 'Some text before  Some more text',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
         },
       ],
       [
-        ['Some text before <lexiArti', 'fact', ' title="Some title" id="artifact_1">foo</lexiArtifact> Some more text'],
+        ['Some text before <idemArti', 'fact', ' title="Some title" id="artifact_1">foo</idemArtifact> Some more text'],
         {
           output: 'Some text before  Some more text',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
@@ -67,12 +67,12 @@ describe('StreamingMessageParser', () => {
       ],
       [
         [
-          'Some text before <lexiArti',
+          'Some text before <idemArti',
           'fac',
           't title="Some title" id="artifact_1"',
           ' ',
           '>',
-          'foo</lexiArtifact> Some more text',
+          'foo</idemArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -81,11 +81,11 @@ describe('StreamingMessageParser', () => {
       ],
       [
         [
-          'Some text before <lexiArti',
+          'Some text before <idemArti',
           'fact',
           ' title="Some title" id="artifact_1"',
           ' >fo',
-          'o</lexiArtifact> Some more text',
+          'o</idemArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -94,13 +94,13 @@ describe('StreamingMessageParser', () => {
       ],
       [
         [
-          'Some text before <lexiArti',
+          'Some text before <idemArti',
           'fact tit',
           'le="Some ',
           'title" id="artifact_1">fo',
           'o',
           '<',
-          '/lexiArtifact> Some more text',
+          '/idemArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -109,11 +109,11 @@ describe('StreamingMessageParser', () => {
       ],
       [
         [
-          'Some text before <lexiArti',
+          'Some text before <idemArti',
           'fact title="Some title" id="artif',
           'act_1">fo',
           'o<',
-          '/lexiArtifact> Some more text',
+          '/idemArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -121,13 +121,13 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
-        'Before <lexiArtifact title="Some title" id="artifact_1">foo</lexiArtifact> After',
+        'Before <idemArtifact title="Some title" id="artifact_1">foo</idemArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
         },
       ],
-    ])('should correctly parse chunks and strip out lexi artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out idem artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -135,20 +135,20 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts with actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Before <lexiArtifact title="Some title" id="artifact_1"><lexiAction type="shell">npm install</lexiAction></lexiArtifact> After',
+        'Before <idemArtifact title="Some title" id="artifact_1"><idemAction type="shell">npm install</idemAction></idemArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 1, onActionClose: 1 },
         },
       ],
       [
-        'Before <lexiArtifact title="Some title" id="artifact_1"><lexiAction type="shell">npm install</lexiAction><lexiAction type="file" filePath="index.js">some content</lexiAction></lexiArtifact> After',
+        'Before <idemArtifact title="Some title" id="artifact_1"><idemAction type="shell">npm install</idemAction><idemAction type="file" filePath="index.js">some content</idemAction></idemArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 2, onActionClose: 2 },
         },
       ],
-    ])('should correctly parse chunks and strip out lexi artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out idem artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });

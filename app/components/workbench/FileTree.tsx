@@ -163,9 +163,9 @@ function Folder({ folder: { depth, name }, collapsed, selected = false, onClick 
   return (
     <NodeButton
       className={classNames('group', {
-        'bg-transparent text-lexi-elements-item-contentDefault hover:text-lexi-elements-item-contentActive hover:bg-lexi-elements-item-backgroundActive':
+        'bg-transparent text-idem-elements-item-contentDefault hover:text-idem-elements-item-contentActive hover:bg-idem-elements-item-backgroundActive':
           !selected,
-        'bg-lexi-elements-item-backgroundAccent text-lexi-elements-item-contentAccent': selected,
+        'bg-idem-elements-item-backgroundAccent text-idem-elements-item-contentAccent': selected,
       })}
       depth={depth}
       iconClasses={classNames({
@@ -190,18 +190,18 @@ function File({ file: { depth, name }, onClick, selected, unsavedChanges = false
   return (
     <NodeButton
       className={classNames('group', {
-        'bg-transparent hover:bg-lexi-elements-item-backgroundActive text-lexi-elements-item-contentDefault': !selected,
-        'bg-lexi-elements-item-backgroundAccent text-lexi-elements-item-contentAccent': selected,
+        'bg-transparent hover:bg-idem-elements-item-backgroundActive text-idem-elements-item-contentDefault': !selected,
+        'bg-idem-elements-item-backgroundAccent text-idem-elements-item-contentAccent': selected,
       })}
       depth={depth}
       iconClasses={classNames('i-ph:file-duotone scale-98', {
-        'group-hover:text-lexi-elements-item-contentActive': !selected,
+        'group-hover:text-idem-elements-item-contentActive': !selected,
       })}
       onClick={onClick}
     >
       <div
         className={classNames('flex items-center', {
-          'group-hover:text-lexi-elements-item-contentActive': !selected,
+          'group-hover:text-idem-elements-item-contentActive': !selected,
         })}
       >
         <div className="flex-1 truncate pr-2">{name}</div>

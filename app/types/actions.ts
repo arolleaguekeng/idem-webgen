@@ -13,6 +13,6 @@ export interface ShellAction extends BaseAction {
   type: 'shell';
 }
 
-export type LexiAction = FileAction | ShellAction;
+export type IdemAction = FileAction | ShellAction;
 
-export type LexiActionData = LexiAction | BaseAction;
+export type IdemActionData = IdemAction | BaseAction;

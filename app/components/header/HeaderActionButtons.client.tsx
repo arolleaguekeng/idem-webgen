@@ -13,7 +13,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   return (
     <div className="flex">
-      <div className="flex border border-lexi-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex border border-idem-elements-borderColor rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat}
@@ -23,9 +23,9 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             }
           }}
         >
-          <div className="i-lexi:chat text-sm" />
+          <div className="i-idem:chat text-sm" />
         </Button>
-        <div className="w-[1px] bg-lexi-elements-borderColor" />
+        <div className="w-[1px] bg-idem-elements-borderColor" />
         <Button
           active={showWorkbench}
           onClick={() => {
@@ -54,10 +54,10 @@ function Button({ active = false, disabled = false, children, onClick }: ButtonP
   return (
     <button
       className={classNames('flex items-center p-1.5', {
-        'bg-lexi-elements-item-backgroundDefault hover:bg-lexi-elements-item-backgroundActive text-lexi-elements-textTertiary hover:text-lexi-elements-textPrimary':
+        'bg-idem-elements-item-backgroundDefault hover:bg-idem-elements-item-backgroundActive text-idem-elements-textTertiary hover:text-idem-elements-textPrimary':
           !active,
-        'bg-lexi-elements-item-backgroundAccent text-lexi-elements-item-contentAccent': active && !disabled,
-        'bg-lexi-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
+        'bg-idem-elements-item-backgroundAccent text-idem-elements-item-contentAccent': active && !disabled,
+        'bg-idem-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
           disabled,
       })}
       onClick={onClick}

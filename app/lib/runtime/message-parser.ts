@@ -1,16 +1,16 @@
-import type { ActionType, LexiAction, LexiActionData, FileAction, ShellAction } from '~/types/actions';
-import type { LexiArtifactData } from '~/types/artifact';
+import type { ActionType, IdemAction, IdemActionData, FileAction, ShellAction } from '~/types/actions';
+import type { IdemArtifactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<lexiArtifact';
-const ARTIFACT_TAG_CLOSE = '</lexiArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<lexiAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</lexiAction>';
+const ARTIFACT_TAG_OPEN = '<idemArtifact';
+const ARTIFACT_TAG_CLOSE = '</idemArtifact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<idemAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</idemAction>';
 
 const logger = createScopedLogger('MessageParser');
 
-export interface ArtifactCallbackData extends LexiArtifactData {
+export interface ArtifactCallbackData extends IdemArtifactData {
   messageId: string;
 }
 
@@ -18,7 +18,7 @@ export interface ActionCallbackData {
   artifactId: string;
   messageId: string;
   actionId: string;
-  action: LexiAction;
+  action: IdemAction;
 }
 
 export type ArtifactCallback = (data: ArtifactCallbackData) => void;
@@ -46,8 +46,8 @@ interface MessageState {
   position: number;
   insideArtifact: boolean;
   insideAction: boolean;
-  currentArtifact?: LexiArtifactData;
-  currentAction: LexiActionData;
+  currentArtifact?: IdemArtifactData;
+  currentAction: IdemActionData;
   actionId: number;
 }
 
@@ -110,7 +110,7 @@ export class StreamingMessageParser {
                */
               actionId: String(state.actionId - 1),
 
-              action: currentAction as LexiAction,
+              action: currentAction as IdemAction,
             });
 
             state.insideAction = false;
@@ -136,7 +136,7 @@ export class StreamingMessageParser {
                 artifactId: currentArtifact.id,
                 messageId,
                 actionId: String(state.actionId++),
-                action: state.currentAction as LexiAction,
+                action: state.currentAction as IdemAction,
               });
 
               i = actionEndIndex + 1;
@@ -191,7 +191,7 @@ export class StreamingMessageParser {
               const currentArtifact = {
                 id: artifactId,
                 title: artifactTitle,
-              } satisfies LexiArtifactData;
+              } satisfies IdemArtifactData;
 
               state.currentArtifact = currentArtifact;
 
@@ -271,7 +271,7 @@ export class StreamingMessageParser {
 
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
-    'class="__lexiArtifact__"',
+    'class="__idemArtifact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),

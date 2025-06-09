@@ -89,8 +89,8 @@ export const FileBreadcrumb = memo<FileBreadcrumbProps>(({ files, pathSegments =
                 <span
                   ref={(ref) => (segmentRefs.current[index] = ref)}
                   className={classNames('flex items-center gap-1.5 cursor-pointer shrink-0', {
-                    'text-lexi-elements-textTertiary hover:text-lexi-elements-textPrimary': !isActive,
-                    'text-lexi-elements-textPrimary underline': isActive,
+                    'text-idem-elements-textTertiary hover:text-idem-elements-textPrimary': !isActive,
+                    'text-idem-elements-textPrimary underline': isActive,
                     'pr-4': isLast,
                   })}
                   onClick={() => handleSegmentClick(index)}
@@ -118,7 +118,7 @@ export const FileBreadcrumb = memo<FileBreadcrumbProps>(({ files, pathSegments =
                         variants={contextMenuVariants}
                       >
                         <div className="rounded-lg overflow-hidden">
-                          <div className="max-h-[50vh] min-w-[300px] overflow-scroll bg-lexi-elements-background-depth-1 border border-lexi-elements-borderColor shadow-sm rounded-lg">
+                          <div className="max-h-[50vh] min-w-[300px] overflow-scroll bg-idem-elements-background-depth-1 border border-idem-elements-borderColor shadow-sm rounded-lg">
                             <FileTree
                               files={files}
                               hideRoot
@@ -133,7 +133,7 @@ export const FileBreadcrumb = memo<FileBreadcrumbProps>(({ files, pathSegments =
                             />
                           </div>
                         </div>
-                        <DropdownMenu.Arrow className="fill-lexi-elements-borderColor" />
+                        <DropdownMenu.Arrow className="fill-idem-elements-borderColor" />
                       </motion.div>
                     </DropdownMenu.Content>
                   </DropdownMenu.Portal>

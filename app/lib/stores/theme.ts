@@ -2,7 +2,7 @@ import { atom } from 'nanostores';
 
 export type Theme = 'dark' | 'light';
 
-export const kTheme = 'lexi_theme';
+export const kTheme = 'idem_theme';
 
 export function themeIsDark() {
   return themeStore.get() === 'dark';

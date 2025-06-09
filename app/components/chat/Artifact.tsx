@@ -49,21 +49,21 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
   }, [actions]);
 
   return (
-    <div className="artifact border border-lexi-elements-borderColor flex flex-col overflow-hidden rounded-lg w-full transition-border duration-150">
+    <div className="artifact border border-idem-elements-borderColor flex flex-col overflow-hidden rounded-lg w-full transition-border duration-150">
       <div className="flex">
         <button
-          className="flex items-stretch bg-lexi-elements-artifacts-background hover:bg-lexi-elements-artifacts-backgroundHover w-full overflow-hidden"
+          className="flex items-stretch bg-idem-elements-artifacts-background hover:bg-idem-elements-artifacts-backgroundHover w-full overflow-hidden"
           onClick={() => {
             const showWorkbench = workbenchStore.showWorkbench.get();
             workbenchStore.showWorkbench.set(!showWorkbench);
           }}
         >
           <div className="px-5 p-3.5 w-full text-left">
-            <div className="w-full text-lexi-elements-textPrimary font-medium leading-5 text-sm">{artifact?.title}</div>
-            <div className="w-full w-full text-lexi-elements-textSecondary text-xs mt-0.5">Click to open Workbench</div>
+            <div className="w-full text-idem-elements-textPrimary font-medium leading-5 text-sm">{artifact?.title}</div>
+            <div className="w-full w-full text-idem-elements-textSecondary text-xs mt-0.5">Click to open Workbench</div>
           </div>
         </button>
-        <div className="bg-lexi-elements-artifacts-borderColor w-[1px]" />
+        <div className="bg-idem-elements-artifacts-borderColor w-[1px]" />
         <AnimatePresence>
           {actions.length && (
             <motion.button
@@ -71,7 +71,7 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
               animate={{ width: 'auto' }}
               exit={{ width: 0 }}
               transition={{ duration: 0.15, ease: cubicEasingFn }}
-              className="bg-lexi-elements-artifacts-background hover:bg-lexi-elements-artifacts-backgroundHover"
+              className="bg-idem-elements-artifacts-background hover:bg-idem-elements-artifacts-backgroundHover"
               onClick={toggleActions}
             >
               <div className="p-4">
@@ -90,8 +90,8 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
             exit={{ height: '0px' }}
             transition={{ duration: 0.15 }}
           >
-            <div className="bg-lexi-elements-artifacts-borderColor h-[1px]" />
-            <div className="p-5 text-left bg-lexi-elements-actions-background">
+            <div className="bg-idem-elements-artifacts-borderColor h-[1px]" />
+            <div className="p-5 text-left bg-idem-elements-actions-background">
               <ActionList actions={actions} />
             </div>
           </motion.div>
@@ -163,7 +163,7 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                 {type === 'file' ? (
                   <div>
                     Create{' '}
-                    <code className="bg-lexi-elements-artifacts-inlineCode-background text-lexi-elements-artifacts-inlineCode-text px-1.5 py-1 rounded-md">
+                    <code className="bg-idem-elements-artifacts-inlineCode-background text-idem-elements-artifacts-inlineCode-text px-1.5 py-1 rounded-md">
                       {action.filePath}
                     </code>
                   </div>
@@ -192,19 +192,19 @@ const ActionList = memo(({ actions }: ActionListProps) => {
 function getIconColor(status: ActionState['status']) {
   switch (status) {
     case 'pending': {
-      return 'text-lexi-elements-textTertiary';
+      return 'text-idem-elements-textTertiary';
     }
     case 'running': {
-      return 'text-lexi-elements-loader-progress';
+      return 'text-idem-elements-loader-progress';
     }
     case 'complete': {
-      return 'text-lexi-elements-icon-success';
+      return 'text-idem-elements-icon-success';
     }
     case 'aborted': {
-      return 'text-lexi-elements-textSecondary';
+      return 'text-idem-elements-textSecondary';
     }
     case 'failed': {
-      return 'text-lexi-elements-icon-error';
+      return 'text-idem-elements-icon-error';
     }
     default: {
       return undefined;

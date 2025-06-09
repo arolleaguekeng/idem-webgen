@@ -1,4 +1,4 @@
-export interface LexiArtifactData {
+export interface IdemArtifactData {
   id: string;
   title: string;
 }
