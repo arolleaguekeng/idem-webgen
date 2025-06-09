@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="public/assets/icons/logo_white.png" alt="Idem Logo" width="200">
+  <img src="public/logo_white.png" alt="Idem Logo" width="200">
   <p><strong>AI-Powered Web Application Generator</strong></p>
 </div>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Angular](https://img.shields.io/badge/Angular-20-dd0031.svg)](https://angular.dev/)
+
 
 # Idem Web Generator: IDEM's AI-Powered Web Application Generator
 
