@@ -14,12 +14,14 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 
 export async function getCurrentUser(): Promise<UserModel | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
+    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       credentials: 'include',
     });
 
     if (!response.ok) {
       if (response.status === 401) {
+        logger.warn('User not authenticated');
+        return null;
       }
 
       logger.error('Error fetching current user:', response.statusText);
@@ -263,7 +265,7 @@ export const getProjectById = async (projectId: string): Promise<ProjectModel | 
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
+    const response = await fetch(`${API_BASE_URL}/projects/get/${projectId}`, {
       credentials: 'include',
     });
 

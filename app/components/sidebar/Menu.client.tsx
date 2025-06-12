@@ -5,7 +5,7 @@ import { menuStore } from '~/lib/stores/menu';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
-import { db, deleteById, getAll, chatId, type ChatHistoryItem } from '~/lib/persistence';
+import { getAll, chatId, type ChatHistoryItem, deleteById } from '~/lib/persistence';
 import { cubicEasingFn } from '~/utils/easings';
 import { logger } from '~/utils/logger';
 import { HistoryItem } from './HistoryItem';
@@ -41,32 +41,28 @@ export function Menu() {
   const open = useStore(menuStore);
 
   const loadEntries = useCallback(() => {
-    if (db) {
-      getAll()
-        .then((list) => list.filter((item) => item.urlId && item.description))
-        .then(setList)
-        .catch((error) => toast.error(error.message));
-    }
+    getAll()
+      .then((list) => list.filter((item) => item.urlId && item.description))
+      .then(setList)
+      .catch((error) => toast.error(error.message));
   }, []);
 
   const deleteItem = useCallback((event: React.UIEvent, item: ChatHistoryItem) => {
     event.preventDefault();
 
-    if (db) {
-      deleteById(item.id)
-        .then(() => {
-          loadEntries();
+    deleteById(item.id)
+      .then(() => {
+        loadEntries();
 
-          if (chatId.get() === item.id) {
-            // hard page navigation to clear the stores
-            window.location.pathname = '/';
-          }
-        })
-        .catch((error) => {
-          toast.error('Failed to delete conversation');
-          logger.error(error);
-        });
-    }
+        if (chatId.get() === item.id) {
+          // hard page navigation to clear the stores
+          window.location.pathname = '/';
+        }
+      })
+      .catch((error) => {
+        toast.error('Failed to delete conversation');
+        logger.error(error);
+      });
   }, []);
 
   const closeDialog = () => {

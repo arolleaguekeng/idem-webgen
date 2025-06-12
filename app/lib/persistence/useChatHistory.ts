@@ -4,7 +4,7 @@ import { atom } from 'nanostores';
 import type { Message } from 'ai';
 import { toast } from 'react-toastify';
 import { workbenchStore } from '~/lib/stores/workbench';
-import { getMessages, getNextId, getUrlId, openDatabase, setMessages } from './db';
+import { getMessages, getNextId, getUrlId, setMessages, currentUser } from './db';
 
 export interface ChatHistoryItem {
   id: string;
@@ -16,8 +16,6 @@ export interface ChatHistoryItem {
 }
 
 const persistenceEnabled = !import.meta.env.VITE_DISABLE_PERSISTENCE;
-
-export const db = persistenceEnabled ? await openDatabase() : undefined;
 
 export const chatId = atom<string | undefined>(undefined);
 export const description = atom<string | undefined>(undefined);
@@ -31,13 +29,8 @@ export function useChatHistory() {
   const [urlId, setUrlId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (!db) {
+    if (!persistenceEnabled) {
       setReady(true);
-
-      if (persistenceEnabled) {
-        toast.error(`Chat persistence is unavailable`);
-      }
-
       return;
     }
 
@@ -65,7 +58,7 @@ export function useChatHistory() {
     ready: !mixedId || ready,
     initialMessages,
     storeMessageHistory: async (messages: Message[]) => {
-      if (!db || messages.length === 0) {
+      if (!persistenceEnabled || !currentUser || messages.length === 0) {
         return;
       }
 
@@ -92,7 +85,13 @@ export function useChatHistory() {
         }
       }
 
-      await setMessages(chatId.get() as string, messages, urlId, description.get());
+      // send the chat messages to the API
+      await setMessages(chatId.get() as string, messages, urlId);
+
+      /**
+       * Note: the current API implementation doesn't support description
+       * and project association - you'll need to extend the API to include these.
+       */
     },
   };
 }
