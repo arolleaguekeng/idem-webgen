@@ -3,6 +3,7 @@ import { createScopedLogger } from '~/utils/logger';
 import type { ChatHistoryItem } from './useChatHistory';
 import type { UserModel } from './userModel';
 import type { ProjectModel } from './models/project.model';
+import { getAuth } from 'firebase/auth';
 
 const logger = createScopedLogger('ChatHistory');
 
@@ -11,6 +12,38 @@ const logger = createScopedLogger('ChatHistory');
  * It's recommended to use an environment variable for this.
  */
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
+/**
+ * Gets authentication headers for API requests.
+ *
+ * @returns Promise with headers object
+ */
+async function getAuthHeaders(): Promise<Record<string, string>> {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error('User not authenticated for API operation');
+  }
+
+  try {
+    const token = await user.getIdToken();
+
+    if (!token) {
+      throw new Error('Failed to retrieve ID token. User authenticated but token is null.');
+    }
+
+    return {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  } catch (error) {
+    console.error('Error in getAuthHeaders:', error instanceof Error ? error.message : String(error));
+    throw new Error(
+      'Authentication header could not be generated: ' + (error instanceof Error ? error.message : String(error)),
+    );
+  }
+}
 
 export async function getCurrentUser(): Promise<UserModel | null> {
   try {
@@ -52,8 +85,11 @@ export async function getAll(): Promise<ChatHistoryItem[]> {
   try {
     await checkAuth();
 
+    const headers = await getAuthHeaders();
+
     const response = await fetch(`${API_BASE_URL}/chats`, {
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -80,11 +116,10 @@ export async function setMessages(id: string, messages: Message[], urlId?: strin
       timestamp: new Date().toISOString(),
     };
 
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       method: 'PUT', // or 'POST' if creating new and server generates ID
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(payload),
       credentials: 'include',
     });
@@ -130,8 +165,10 @@ export async function getMessagesByUrlId(urlId: string): Promise<ChatHistoryItem
     await checkAuth();
 
     // TODO: Replace with your actual API endpoint for getting messages by URL ID
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats?urlId=${encodeURIComponent(urlId)}`, {
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -158,8 +195,10 @@ export async function getMessagesById(id: string): Promise<ChatHistoryItem | und
     await checkAuth();
 
     // TODO: Replace with your actual API endpoint for getting messages by ID
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -183,9 +222,11 @@ export async function deleteById(id: string): Promise<void> {
     await checkAuth();
 
     // TODO: Replace with your actual API endpoint for deleting a chat by ID
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       method: 'DELETE',
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -202,8 +243,10 @@ export async function getNextId(): Promise<string> {
   try {
     await checkAuth();
 
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/next-id`, {
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -243,8 +286,10 @@ async function getUrlIds(): Promise<string[]> {
   try {
     await checkAuth();
 
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/url-ids`, {
       credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
@@ -265,8 +310,9 @@ export const getProjectById = async (projectId: string): Promise<ProjectModel | 
   }
 
   try {
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/projects/get/${projectId}`, {
-      credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
