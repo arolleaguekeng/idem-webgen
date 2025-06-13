@@ -1,12 +1,10 @@
 import { useStore } from '@nanostores/react';
 import { setMessages } from '~/lib/persistence/db';
-import { chatId } from '~/lib/persistence/useChatHistory';
-import type { Message } from 'ai';
 import { useChat } from 'ai/react';
 import { useAnimate } from 'framer-motion';
 import { memo, useEffect, useRef, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { useMessageParser, usePromptEnhancer, useShortcuts } from '~/lib/hooks';
+import { useMessageParser, useShortcuts } from '~/lib/hooks';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { BaseChat } from './BaseChat';
@@ -30,7 +28,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   const [error, setError] = useState<string | null>(null);
 
   const { showChat } = useStore(chatStore);
-  const [animationScope, animate] = useAnimate();
+  const [animationScope] = useAnimate();
 
   const { messages, append, isLoading, stop } = useChat({
     api: '/api/chat',
@@ -44,17 +42,13 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     },
   });
 
-  const { parsedMessages, parseMessages } = useMessageParser();
+  const { parseMessages } = useMessageParser();
 
   const sendMessage = async (message: string) => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
 
-    // await append({
-    //   role: 'assistant',
-    //   content: message,
-    // });
-
-    // Store messages in database
     await setMessages(
       projectId,
       messages.map((message) => ({ ...message })),
@@ -62,19 +56,20 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   };
 
   const executeGeneration = async (prompt: string) => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
 
     await workbenchStore.saveAllFiles();
+
     const fileModifications = workbenchStore.getFileModifcations();
     chatStore.setKey('aborted', false);
 
-    // First display the prompt
     await append({
       role: 'user',
       content: prompt,
     });
 
-    // Then execute it
     if (fileModifications !== undefined) {
       const diff = fileModificationsToHTML(fileModifications);
       await sendMessage(`${diff}\n\n${prompt}`);
@@ -97,21 +92,17 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
       try {
         await workbenchStore.saveAllFiles();
+
         const project = await getProjectById(projectId);
 
         if (!project) {
           throw new Error('Project not found');
         }
+
         setIsLoadingProject(false);
+
         const prompt = webGenService.generateWebsitePrompt(project);
 
-        // // Show the prompt in chat
-        // await append({
-        //   role: 'user',
-        //   content: prompt,
-        // });
-
-        // Execute generation directly
         await executeGeneration(prompt);
 
         chatStore.setKey('started', true);

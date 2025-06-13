@@ -1,11 +1,18 @@
 import type { Message } from 'ai';
 import { createScopedLogger } from '~/utils/logger';
 import type { ChatHistoryItem } from './useChatHistory';
-import type { UserModel } from './userModel';
 import type { ProjectModel } from './models/project.model';
-import { getAuth } from 'firebase/auth';
 
 const logger = createScopedLogger('ChatHistory');
+
+export const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
 
 /**
  * Define the base URL for your API.
@@ -19,33 +26,26 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
  * @returns Promise with headers object
  */
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const auth = getAuth();
-  const user = auth.currentUser;
+  console.log('document.cookie', document.cookie);
 
-  if (!user) {
-    throw new Error('User not authenticated for API operation');
+  const token = document.cookie
+    .split(';')
+    .find((c) => c.trim().startsWith('firebase_auth_token='))
+    ?.split('=')[1];
+
+  console.log('token', token);
+
+  if (!token) {
+    throw new Error('ID token not found in cookies. User authenticated but token is null.');
   }
 
-  try {
-    const token = await user.getIdToken();
-
-    if (!token) {
-      throw new Error('Failed to retrieve ID token. User authenticated but token is null.');
-    }
-
-    return {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-  } catch (error) {
-    console.error('Error in getAuthHeaders:', error instanceof Error ? error.message : String(error));
-    throw new Error(
-      'Authentication header could not be generated: ' + (error instanceof Error ? error.message : String(error)),
-    );
-  }
+  return {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
 }
 
-export async function getCurrentUser(): Promise<UserModel | null> {
+export async function getCurrentUser(): Promise<any | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       credentials: 'include',
@@ -62,7 +62,7 @@ export async function getCurrentUser(): Promise<UserModel | null> {
       return null;
     }
 
-    const user = (await response.json()) as UserModel;
+    const user = await response.json();
 
     return user;
   } catch (error) {
@@ -194,11 +194,8 @@ export async function getMessagesById(id: string): Promise<ChatHistoryItem | und
   try {
     await checkAuth();
 
-    // TODO: Replace with your actual API endpoint for getting messages by ID
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {
@@ -305,14 +302,11 @@ async function getUrlIds(): Promise<string[]> {
 }
 
 export const getProjectById = async (projectId: string): Promise<ProjectModel | null> => {
-  if (!projectId) {
-    throw new Error('Not authenticated');
-  }
+  console.log('projectId', projectId);
 
   try {
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/projects/get/${projectId}`, {
-      headers,
+      credentials: 'include',
     });
 
     if (!response.ok) {
