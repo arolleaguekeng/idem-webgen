@@ -12,7 +12,11 @@ import { BaseChat } from './BaseChat';
 import { getProjectById } from '~/lib/persistence/db';
 import { createScopedLogger } from '~/utils/logger';
 import { fileModificationsToHTML } from '~/utils/diff';
-import { updateWebContainerMetadata, getRegisteredWebContainerId } from '~/lib/webcontainer';
+import {
+  updateWebContainerMetadata,
+  getRegisteredWebContainerId,
+  ensureWebContainerRegistered,
+} from '~/lib/webcontainer';
 import { useChatWithWebcontainer } from '~/lib/hooks/useChatWithWebcontainer';
 
 const logger = createScopedLogger('GenerateChat');
@@ -63,6 +67,18 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     }
 
     await workbenchStore.saveAllFiles();
+
+    // enregistrer le webcontainer dans la base de données lors de la première génération
+    try {
+      const webcontainerId = await ensureWebContainerRegistered(projectId);
+      if (webcontainerId) {
+        logger.info('WebContainer registered for generation:', webcontainerId);
+      }
+    } catch (error) {
+      logger.error('Failed to register webcontainer:', error);
+      toast.error('Failed to register webcontainer');
+      return;
+    }
 
     const fileModifications = workbenchStore.getFileModifcations();
     chatStore.setKey('aborted', false);

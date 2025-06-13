@@ -9,6 +9,7 @@ const webContainerService = new WebContainerService();
 interface WebContainerContext {
   loaded: boolean;
   registeredId?: string;
+  isRegistrationPending?: boolean;
 }
 
 export const webcontainerContext: WebContainerContext = import.meta.hot?.data.webcontainerContext ?? {
@@ -24,7 +25,7 @@ export let webcontainer: Promise<WebContainer> = new Promise(() => {
 });
 
 /**
- * Enregistrer le webcontainer dans le backend.
+ * Enregistrer le webcontainer dans le backend lors de la génération.
  */
 async function registerWebContainerToBackend(
   webcontainerInstance: WebContainer,
@@ -32,7 +33,6 @@ async function registerWebContainerToBackend(
 ): Promise<string | null> {
   try {
     if (!projectId) {
-      // essayer de récupérer le projectId depuis l'URL ou le localStorage
       const urlParams = new URLSearchParams(window.location.search);
       projectId = urlParams.get('projectId') || localStorage.getItem('currentProjectId') || 'default';
     }
@@ -51,15 +51,64 @@ async function registerWebContainerToBackend(
     logger.info('WebContainer registered to backend:', webcontainerData.id);
     webcontainerContext.registeredId = webcontainerData.id;
 
-    // mettre à jour le statut à 'active' une fois que le container est prêt
     await webContainerService.updateWebContainer(webcontainerData.id, {
       status: 'active',
+    });
+
+    webcontainerInstance.on('port', async (port, type, url) => {
+      try {
+        if (webcontainerContext.registeredId) {
+          await webContainerService.updateWebContainer(webcontainerContext.registeredId, {
+            metadata: {
+              workdirName: WORK_DIR_NAME,
+              ports: [port],
+              url,
+            },
+          });
+          logger.debug('Updated webcontainer port info:', { port, url });
+        }
+      } catch (error) {
+        logger.error('Failed to update port info:', error);
+      }
     });
 
     return webcontainerData.id;
   } catch (error) {
     logger.error('Failed to register webcontainer to backend:', error);
     return null;
+  }
+}
+
+/**
+ * Enregistrer le webcontainer lors de la première génération de contenu.
+ */
+export async function ensureWebContainerRegistered(projectId?: string): Promise<string | null> {
+  if (webcontainerContext.registeredId) {
+    return webcontainerContext.registeredId;
+  }
+
+  if (webcontainerContext.isRegistrationPending) {
+    while (webcontainerContext.isRegistrationPending) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    return webcontainerContext.registeredId || null;
+  }
+
+  try {
+    webcontainerContext.isRegistrationPending = true;
+
+    const webcontainerInstance = await webcontainer;
+
+    if (!webcontainerContext.loaded) {
+      logger.warn('WebContainer not loaded yet');
+      return null;
+    }
+
+    const registeredId = await registerWebContainerToBackend(webcontainerInstance, projectId);
+
+    return registeredId;
+  } finally {
+    webcontainerContext.isRegistrationPending = false;
   }
 }
 
@@ -73,37 +122,13 @@ if (!import.meta.env.SSR) {
       })
       .then(async (webcontainer) => {
         webcontainerContext.loaded = true;
-        logger.info('WebContainer booted successfully');
-
-        // enregistrer le webcontainer dans le backend
-        const registeredId = await registerWebContainerToBackend(webcontainer);
-
-        if (registeredId) {
-          // écouter les changements de ports pour mettre à jour le backend
-          webcontainer.on('port', async (port, type, url) => {
-            try {
-              if (webcontainerContext.registeredId) {
-                await webContainerService.updateWebContainer(webcontainerContext.registeredId, {
-                  metadata: {
-                    workdirName: WORK_DIR_NAME,
-                    ports: [port],
-                    url,
-                  },
-                });
-                logger.debug('Updated webcontainer port info:', { port, url });
-              }
-            } catch (error) {
-              logger.error('Failed to update port info:', error);
-            }
-          });
-        }
+        logger.info('WebContainer booted successfully (not registered yet)');
 
         return webcontainer;
       })
       .catch(async (error) => {
         logger.error('Failed to boot WebContainer:', error);
 
-        // mettre à jour le statut à 'error' si l'enregistrement a eu lieu
         if (webcontainerContext.registeredId) {
           try {
             await webContainerService.updateWebContainer(webcontainerContext.registeredId, {

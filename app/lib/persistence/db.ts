@@ -52,7 +52,7 @@ export async function getAll(): Promise<ChatHistoryItem[]> {
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers`, {
       credentials: 'include',
     });
 
@@ -86,8 +86,8 @@ export async function setMessages(
       webcontainerId,
     };
 
-    const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
-      method: 'PUT', // or 'POST' if creating new and server generates ID
+    const response = await fetch(`${API_BASE_URL}/webcontainers/${webcontainerId}`, {
+      method: 'PUT',
       body: JSON.stringify(payload),
       credentials: 'include',
     });
@@ -132,8 +132,7 @@ export async function getMessagesByUrlId(urlId: string): Promise<ChatHistoryItem
   try {
     await checkAuth();
 
-    // TODO: Replace with your actual API endpoint for getting messages by URL ID
-    const response = await fetch(`${API_BASE_URL}/chats?urlId=${encodeURIComponent(urlId)}`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers?urlId=${encodeURIComponent(urlId)}`, {
       credentials: 'include',
     });
 
@@ -160,7 +159,7 @@ export async function getMessagesById(id: string): Promise<ChatHistoryItem | und
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers/${id}`, {
       credentials: 'include',
     });
 
@@ -184,7 +183,7 @@ export async function deleteById(id: string): Promise<void> {
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -203,7 +202,7 @@ export async function getNextId(): Promise<string> {
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats/next-id`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers/next-id`, {
       credentials: 'include',
     });
 
@@ -244,7 +243,7 @@ async function getUrlIds(): Promise<string[]> {
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats/url-ids`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers/url-ids`, {
       credentials: 'include',
     });
 
@@ -292,7 +291,7 @@ export async function getChatByWebcontainerId(webcontainerId: string): Promise<C
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats/webcontainer/${webcontainerId}`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainer/${webcontainerId}`, {
       credentials: 'include',
     });
 
@@ -320,7 +319,7 @@ export async function getAllChatsByWebcontainerId(webcontainerId: string): Promi
   try {
     await checkAuth();
 
-    const response = await fetch(`${API_BASE_URL}/chats?webcontainerId=${webcontainerId}`, {
+    const response = await fetch(`${API_BASE_URL}/webcontainers/${webcontainerId}`, {
       credentials: 'include',
     });
 
