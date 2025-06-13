@@ -1,17 +1,19 @@
-import { useStore } from '@nanostores/react';
-import { setMessages } from '~/lib/persistence/db';
 import { useChat } from 'ai/react';
+import { toast, ToastContainer } from 'react-toastify';
 import { useAnimate } from 'framer-motion';
 import { memo, useEffect, useRef, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import { useMessageParser, useShortcuts } from '~/lib/hooks';
+import { useStore } from '@nanostores/react';
+
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
-import { BaseChat } from './BaseChat';
+import { useShortcuts, useMessageParser } from '~/lib/hooks';
 import { WebGenService } from '~/utils/webgwenService';
+import { BaseChat } from './BaseChat';
 import { getProjectById } from '~/lib/persistence/db';
 import { createScopedLogger } from '~/utils/logger';
 import { fileModificationsToHTML } from '~/utils/diff';
+import { updateWebContainerMetadata, getRegisteredWebContainerId } from '~/lib/webcontainer';
+import { useChatWithWebcontainer } from '~/lib/hooks/useChatWithWebcontainer';
 
 const logger = createScopedLogger('GenerateChat');
 
@@ -30,8 +32,11 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   const { showChat } = useStore(chatStore);
   const [animationScope] = useAnimate();
 
+  const { chatHistory, saveMessages } = useChatWithWebcontainer(projectId);
+
   const { messages, append, isLoading, stop } = useChat({
     api: '/api/chat',
+    initialMessages: chatHistory?.messages || [],
     onError: (error) => {
       logger.error('Request failed\n\n', error);
       toast.error('There was an error processing your request');
@@ -49,10 +54,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
       return;
     }
 
-    await setMessages(
-      projectId,
-      messages.map((message) => ({ ...message })),
-    );
+    await saveMessages(messages.map((message) => ({ ...message })));
   };
 
   const executeGeneration = async (prompt: string) => {
@@ -74,6 +76,21 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
       const diff = fileModificationsToHTML(fileModifications);
       await sendMessage(`${diff}\n\n${prompt}`);
       workbenchStore.resetAllFileModifications();
+
+      // mettre à jour les métadonnées du webcontainer avec les fichiers créés
+      try {
+        const webcontainerId = getRegisteredWebContainerId();
+
+        if (webcontainerId) {
+          const modifiedFiles = Object.keys(fileModifications);
+          await updateWebContainerMetadata({
+            files: modifiedFiles,
+          });
+          logger.debug('Updated webcontainer metadata with files:', modifiedFiles);
+        }
+      } catch (error) {
+        logger.warn('Failed to update webcontainer metadata:', error);
+      }
     } else {
       await sendMessage(prompt);
     }

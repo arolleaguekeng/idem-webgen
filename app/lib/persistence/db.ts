@@ -2,6 +2,7 @@ import type { Message } from 'ai';
 import { createScopedLogger } from '~/utils/logger';
 import type { ChatHistoryItem } from './useChatHistory';
 import type { ProjectModel } from './models/project.model';
+import type { UserModel } from './userModel';
 
 const logger = createScopedLogger('ChatHistory');
 
@@ -11,7 +12,7 @@ const logger = createScopedLogger('ChatHistory');
  */
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-export async function getCurrentUser(): Promise<any | null> {
+export async function getCurrentUser(): Promise<UserModel | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       credentials: 'include',
@@ -28,7 +29,7 @@ export async function getCurrentUser(): Promise<any | null> {
       return null;
     }
 
-    const user = await response.json();
+    const user = (await response.json()) as UserModel;
 
     return user;
   } catch (error) {
@@ -67,16 +68,22 @@ export async function getAll(): Promise<ChatHistoryItem[]> {
   }
 }
 
-export async function setMessages(id: string, messages: Message[], urlId?: string): Promise<void> {
+export async function setMessages(
+  id: string,
+  messages: Message[],
+  urlId?: string,
+  webcontainerId?: string,
+): Promise<void> {
   try {
     await checkAuth();
-    logger.debug('Saving messages via API:', { id, messages, urlId });
+    logger.debug('Saving messages via API:', { id, messages, urlId, webcontainerId });
 
     const payload = {
       id, // or let the server generate it
       messages,
       urlId: urlId || id,
       timestamp: new Date().toISOString(),
+      webcontainerId,
     };
 
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
@@ -253,28 +260,78 @@ async function getUrlIds(): Promise<string[]> {
   }
 }
 
-export const getProjectById = async (projectId: string): Promise<ProjectModel | null> => {
-  console.log('projectId', projectId);
-
+export async function getProjectById(projectId: string): Promise<ProjectModel | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/projects/get/${projectId}`, {
+    await checkAuth();
+
+    const response = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
       credentials: 'include',
     });
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        logger.warn(`Project with ID ${projectId} not found via API.`);
-        return null; // or throw new Error('Project not found'); as per original logic
-      }
+    if (response.status === 404) {
+      logger.warn('Project not found:', projectId);
+      return null;
+    }
 
-      logger.error('Error getting project by ID from API:', response.statusText);
+    if (!response.ok) {
+      logger.error('Error getting project from API:', response.statusText);
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     return (await response.json()) as ProjectModel;
   } catch (error) {
-    logger.error(`Error in getProjectById for projectId ${projectId}:`, error);
-
-    throw error; // rethrowing to ensure the caller is aware of the failure
+    logger.error('Error getting project:', error);
+    throw error;
   }
-};
+}
+
+/**
+ * Récupérer l'historique du chat par webcontainer ID.
+ */
+export async function getChatByWebcontainerId(webcontainerId: string): Promise<ChatHistoryItem | null> {
+  try {
+    await checkAuth();
+
+    const response = await fetch(`${API_BASE_URL}/chats/webcontainer/${webcontainerId}`, {
+      credentials: 'include',
+    });
+
+    if (response.status === 404) {
+      logger.debug('No chat found for webcontainer:', webcontainerId);
+      return null;
+    }
+
+    if (!response.ok) {
+      logger.error('Error getting chat by webcontainer from API:', response.statusText);
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return (await response.json()) as ChatHistoryItem;
+  } catch (error) {
+    logger.error('Error getting chat by webcontainer:', error);
+    throw error;
+  }
+}
+
+/**
+ * Récupérer tous les chats associés à un webcontainer spécifique.
+ */
+export async function getAllChatsByWebcontainerId(webcontainerId: string): Promise<ChatHistoryItem[]> {
+  try {
+    await checkAuth();
+
+    const response = await fetch(`${API_BASE_URL}/chats?webcontainerId=${webcontainerId}`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      logger.error('Error getting chats by webcontainer from API:', response.statusText);
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return (await response.json()) as ChatHistoryItem[];
+  } catch (error) {
+    logger.error('Error getting chats by webcontainer:', error);
+    throw error;
+  }
+}
