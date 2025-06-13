@@ -5,45 +5,11 @@ import type { ProjectModel } from './models/project.model';
 
 const logger = createScopedLogger('ChatHistory');
 
-export const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
 /**
  * Define the base URL for your API.
  * It's recommended to use an environment variable for this.
  */
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-
-/**
- * Gets authentication headers for API requests.
- *
- * @returns Promise with headers object
- */
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  console.log('document.cookie', document.cookie);
-
-  const token = document.cookie
-    .split(';')
-    .find((c) => c.trim().startsWith('firebase_auth_token='))
-    ?.split('=')[1];
-
-  console.log('token', token);
-
-  if (!token) {
-    throw new Error('ID token not found in cookies. User authenticated but token is null.');
-  }
-
-  return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
-}
 
 export async function getCurrentUser(): Promise<any | null> {
   try {
@@ -85,11 +51,8 @@ export async function getAll(): Promise<ChatHistoryItem[]> {
   try {
     await checkAuth();
 
-    const headers = await getAuthHeaders();
-
     const response = await fetch(`${API_BASE_URL}/chats`, {
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {
@@ -116,10 +79,8 @@ export async function setMessages(id: string, messages: Message[], urlId?: strin
       timestamp: new Date().toISOString(),
     };
 
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       method: 'PUT', // or 'POST' if creating new and server generates ID
-      headers,
       body: JSON.stringify(payload),
       credentials: 'include',
     });
@@ -165,10 +126,8 @@ export async function getMessagesByUrlId(urlId: string): Promise<ChatHistoryItem
     await checkAuth();
 
     // TODO: Replace with your actual API endpoint for getting messages by URL ID
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats?urlId=${encodeURIComponent(urlId)}`, {
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {
@@ -218,12 +177,9 @@ export async function deleteById(id: string): Promise<void> {
   try {
     await checkAuth();
 
-    // TODO: Replace with your actual API endpoint for deleting a chat by ID
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/${id}`, {
       method: 'DELETE',
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {
@@ -240,10 +196,8 @@ export async function getNextId(): Promise<string> {
   try {
     await checkAuth();
 
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/next-id`, {
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {
@@ -283,10 +237,8 @@ async function getUrlIds(): Promise<string[]> {
   try {
     await checkAuth();
 
-    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/chats/url-ids`, {
       credentials: 'include',
-      headers,
     });
 
     if (!response.ok) {

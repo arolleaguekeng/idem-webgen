@@ -58,7 +58,6 @@
     "ai": "^3.4.33",
     "date-fns": "^3.6.0",
     "diff": "^5.2.0",
-    "firebase": "^11.6.1",
     "framer-motion": "^11.2.12",
     "isbot": "^4.1.0",
     "istextorbinary": "^9.5.0",

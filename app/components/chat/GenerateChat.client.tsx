@@ -44,7 +44,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
   const { parseMessages } = useMessageParser();
 
-  const sendMessage = async () => {
+  const sendMessage = async (_message: string) => {
     if (isLoading) {
       return;
     }
