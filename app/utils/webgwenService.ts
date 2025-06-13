@@ -35,7 +35,11 @@ ${project.constraints?.length ? `**Constraints:**\n${project.constraints.map((c)
   }
 
   private _buildTechnicalSpecs(project: ProjectModel): string {
-    const options = project.analysisResultModel.landing.selectedOptions;
+    const options = project.analysisResultModel.landing?.selectedOptions;
+
+    if (!options) {
+      return '';
+    }
 
     return `# TECHNICAL SPECIFICATIONS
 ** Web Technology:** ${options.stack.toUpperCase()}
@@ -55,12 +59,10 @@ ${project.constraints?.length ? `**Constraints:**\n${project.constraints.map((c)
   private _buildBrandGuidelines(brand: BrandIdentityModel): string {
     return `# BRAND GUIDELINES
 **Visual Identity:**
-- Colors: ${brand.colorSystem.summary}
-- Typography: ${brand.typographySystem.summary}
-${brand.logo?.content ? `- Logo: ${brand.logo.content}` : ''}
-
-**Tone & Voice:**
-${brand.toneOfVoice?.content?.substring(0, 200) || 'Professional yet approachable'}`;
+- Colors: ${brand.colors.colors}
+- Typography: ${brand.typography}
+${brand.logo?.svg ? `- Logo: ${brand.logo.svg}` : ''}
+`;
   }
 
   private _buildContentStrategy(): string {

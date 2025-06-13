@@ -1,4 +1,4 @@
-import { type AnalysisResultModel } from './analysisResult.model';
+import type { AnalysisResultModel } from './analysisResult.model';
 
 export interface ProjectModel {
   id?: string;

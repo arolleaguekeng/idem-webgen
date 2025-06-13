@@ -1,12 +1,14 @@
 export interface LogoModel {
-  svg: string; // Main SVG logo (default full version)
-  concept: string; // Branding story or meaning behind the logo
-  colors: string[]; // Array of HEX color codes used in the logo
-  fonts: string[]; // Fonts used in the logo (if any)
+  id: string;
+  name: string;
+  svg: string;
+  concept: string;
+  colors: string[];
+  fonts: string[];
 
   variations?: {
-    lightBackground?: string; // Version optimized for light backgrounds
-    darkBackground?: string; // Version optimized for dark backgrounds
-    monochrome?: string; // Simplified version in black or white
+    lightBackground?: string;
+    darkBackground?: string;
+    monochrome?: string;
   };
 }

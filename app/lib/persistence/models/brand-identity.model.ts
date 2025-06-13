@@ -1,14 +1,36 @@
 import type { LogoModel } from './logo.model';
+import type { SectionModel } from './section.model';
 
 export interface BrandIdentityModel {
-  brandDefinition: { content: string; summary: string };
-  toneOfVoice: { content: string; summary: string };
-  visualIdentityGuidelines: { content: string; summary: string };
-  typographySystem: { content: string; summary: string };
-  colorSystem: { content: string; summary: string };
-  iconographyAndImagery: { content: string; summary: string };
-  layoutAndComposition: { content: string; summary: string };
-  logo: {content : LogoModel, summary: string};
-  globalCss: { content: string; summary: string };
-  summary: { content: string; summary: string };
+  id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  logo: LogoModel;
+  generatedLogos: LogoModel[];
+  colors: ColorModel;
+  generatedColors: ColorModel[];
+  typography: TypographyModel;
+  generatedTypography: TypographyModel[];
+  sections: SectionModel[];
+}
+
+export interface TypographyModel {
+  id: string;
+  name: string;
+  url: string;
+  primaryFont: string;
+  secondaryFont: string;
+}
+
+export interface ColorModel {
+  id: string;
+  name: string;
+  url: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    text: string;
+  };
 }
