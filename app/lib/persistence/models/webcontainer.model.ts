@@ -12,6 +12,7 @@ export interface WebContainerModel {
     files?: string[];
     url?: string;
   };
+  fileContents?: Record<string, string>; // contenu des fichiers du webcontainer
   userId: string;
 }
 
@@ -25,6 +26,7 @@ export interface CreateWebContainerRequest {
     files?: string[];
     url?: string;
   };
+  fileContents?: Record<string, string>; // contenu des fichiers
 }
 
 export interface UpdateWebContainerRequest {
@@ -35,4 +37,5 @@ export interface UpdateWebContainerRequest {
     files?: string[];
     url?: string;
   };
+  fileContents?: Record<string, string>; // contenu des fichiers mis à jour
 }

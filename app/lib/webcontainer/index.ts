@@ -179,3 +179,120 @@ export async function updateWebContainerMetadata(metadata: {
     logger.error('Failed to update webcontainer metadata:', error);
   }
 }
+
+/**
+ * Exporter tous les fichiers du webcontainer.
+ */
+async function exportWebContainerProject(webContainer: WebContainer): Promise<Record<string, string>> {
+  const files: Record<string, string> = {};
+
+  async function readDirRecursive(dir: string) {
+    try {
+      const entries = await webContainer.fs.readdir(dir, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const fullPath = `${dir}/${entry.name}`;
+
+        // ignorer les dossiers et fichiers système
+        if (shouldIgnoreFile(fullPath)) {
+          continue;
+        }
+
+        try {
+          if (entry.isDirectory()) {
+            await readDirRecursive(fullPath);
+          } else {
+            const content = await webContainer.fs.readFile(fullPath, 'utf8');
+            files[fullPath] = content;
+          }
+        } catch (error) {
+          logger.warn(`Error reading ${fullPath}:`, error);
+          continue;
+        }
+      }
+    } catch (error) {
+      logger.warn(`Error reading directory ${dir}:`, error);
+    }
+  }
+
+  await readDirRecursive('/');
+
+  return files; // { "/index.js": "...", "/package.json": "...", etc. }
+}
+
+/**
+ * Fonction utilitaire pour ignorer certains fichiers/dossiers.
+ */
+function shouldIgnoreFile(path: string): boolean {
+  const ignoredPaths = [
+    '/node_modules',
+    '/.git',
+    '/.vscode',
+    '/__pycache__',
+    '/dist',
+    '/build',
+    '/.cache',
+    '/tmp',
+    '/.tmp',
+  ];
+
+  const ignoredExtensions = ['.log', '.tmp', '.cache', '.lock'];
+
+  // ignorer si le chemin commence par un dossier à ignorer
+  if (ignoredPaths.some((ignored) => path.startsWith(ignored))) {
+    return true;
+  }
+
+  // ignorer si l'extension est dans la liste
+  if (ignoredExtensions.some((ext) => path.endsWith(ext))) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Sauvegarder le contenu complet du webcontainer dans le backend.
+ */
+export async function saveWebContainerContent(projectId?: string): Promise<boolean> {
+  try {
+    const webcontainerInstance = await webcontainer;
+
+    if (!projectId) {
+      const urlParams = new URLSearchParams(window.location.search);
+      projectId = urlParams.get('projectId') || localStorage.getItem('currentProjectId') || 'default';
+    }
+
+    const webcontainerId = getRegisteredWebContainerId();
+
+    if (!webcontainerId) {
+      logger.warn('No registered webcontainer ID found');
+
+      return false;
+    }
+
+    logger.info('Reading webcontainer content...');
+
+    const fileContents = await exportWebContainerProject(webcontainerInstance);
+    const filesCount = Object.keys(fileContents).length;
+
+    logger.info(`Found ${filesCount} files to save`);
+
+    // mettre à jour le webcontainer avec le contenu des fichiers
+    await webContainerService.updateWebContainer(webcontainerId, {
+      fileContents,
+      metadata: {
+        workdirName: WORK_DIR_NAME,
+        files: Object.keys(fileContents),
+      },
+    });
+
+    logger.info(`Successfully saved ${filesCount} files to backend`);
+
+    return true;
+  } catch (error) {
+    logger.error('Failed to save webcontainer content:', error);
+
+    return false;
+  }
+}

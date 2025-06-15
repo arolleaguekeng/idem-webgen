@@ -7,6 +7,7 @@ import { useStore } from '@nanostores/react';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { useShortcuts, useMessageParser } from '~/lib/hooks';
+import { useChatHistory } from '~/lib/hooks/useChatHistory';
 import { WebGenService } from '~/utils/webgwenService';
 import { BaseChat } from './BaseChat';
 import { getProjectById } from '~/lib/persistence/db';
@@ -16,8 +17,8 @@ import {
   updateWebContainerMetadata,
   getRegisteredWebContainerId,
   ensureWebContainerRegistered,
+  saveWebContainerContent,
 } from '~/lib/webcontainer';
-import { useChatWithWebcontainer } from '~/lib/hooks/useChatWithWebcontainer';
 
 const logger = createScopedLogger('GenerateChat');
 
@@ -36,7 +37,7 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
   const { showChat } = useStore(chatStore);
   const [animationScope] = useAnimate();
 
-  const { chatHistory, saveMessages } = useChatWithWebcontainer(projectId);
+  const { chatHistory, saveMessages } = useChatHistory(projectId);
 
   const { messages, append, isLoading, stop } = useChat({
     api: '/api/chat',
@@ -45,9 +46,33 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
       logger.error('Request failed\n\n', error);
       toast.error('There was an error processing your request');
     },
-    onFinish: () => {
+    onFinish: async () => {
       logger.debug('Finished streaming');
       chatStore.setKey('started', true);
+
+      try {
+        await saveMessages(messages.map((message) => ({ ...message })));
+        logger.debug('Chat messages saved to localStorage');
+      } catch (error) {
+        logger.error('Error saving chat messages:', error);
+      }
+
+      try {
+        await ensureWebContainerRegistered(projectId);
+
+        const success = await saveWebContainerContent(projectId);
+
+        if (success) {
+          logger.info('WebContainer content saved successfully');
+          toast.success('Project saved to backend');
+        } else {
+          logger.warn('Failed to save webcontainer content');
+          toast.warn('Failed to save project to backend');
+        }
+      } catch (error) {
+        logger.error('Error saving webcontainer content:', error);
+        toast.error('Error saving project to backend');
+      }
     },
   });
 
@@ -57,8 +82,6 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
     if (isLoading) {
       return;
     }
-
-    await saveMessages(messages.map((message) => ({ ...message })));
   };
 
   const executeGeneration = async (prompt: string) => {
@@ -68,15 +91,16 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
 
     await workbenchStore.saveAllFiles();
 
-    // enregistrer le webcontainer dans la base de données lors de la première génération
     try {
       const webcontainerId = await ensureWebContainerRegistered(projectId);
+
       if (webcontainerId) {
         logger.info('WebContainer registered for generation:', webcontainerId);
       }
     } catch (error) {
       logger.error('Failed to register webcontainer:', error);
       toast.error('Failed to register webcontainer');
+
       return;
     }
 
