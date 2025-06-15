@@ -143,4 +143,33 @@ export class WebContainerService {
       throw error;
     }
   }
+
+  /**
+   * Pusher le contenu du webcontainer sur GitHub.
+   */
+  async pushToGitHub(webcontainerId: string): Promise<any> {
+    try {
+      const response = await fetch(`${this._apiBaseUrl}/webcontainers/${webcontainerId}/push-to-github`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({ message: '' }))) as { message?: string };
+        throw new Error(
+          `Failed to push to GitHub: ${response.status} ${response.statusText}. ${errorData.message || ''}`,
+        );
+      }
+
+      const result = await response.json();
+
+      return result;
+    } catch (error) {
+      logger.error('Failed to push webcontainer content to GitHub:', error);
+      return false;
+    }
+  }
 }
