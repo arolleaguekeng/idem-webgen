@@ -9,10 +9,9 @@ export interface WebContainerModel {
   metadata?: {
     workdirName: string;
     ports?: number[];
-    files?: string[];
+    files?: Record<string, string>[];
     url?: string;
   };
-  fileContents?: Record<string, string>; // contenu des fichiers du webcontainer
   userId: string;
 }
 
@@ -23,10 +22,9 @@ export interface CreateWebContainerRequest {
   metadata?: {
     workdirName: string;
     ports?: number[];
-    files?: string[];
+    files?: Record<string, string>[];
     url?: string;
   };
-  fileContents?: Record<string, string>; // contenu des fichiers
 }
 
 export interface UpdateWebContainerRequest {
@@ -34,8 +32,7 @@ export interface UpdateWebContainerRequest {
   metadata?: {
     workdirName?: string;
     ports?: number[];
-    files?: string[];
+    files?: Record<string, string>[];
     url?: string;
   };
-  fileContents?: Record<string, string>; // contenu des fichiers mis à jour
 }

@@ -159,7 +159,7 @@ export function getRegisteredWebContainerId(): string | undefined {
  */
 export async function updateWebContainerMetadata(metadata: {
   ports?: number[];
-  files?: string[];
+  files?: Record<string, string>[];
   url?: string;
 }): Promise<void> {
   if (!webcontainerContext.registeredId) {
@@ -280,10 +280,9 @@ export async function saveWebContainerContent(projectId?: string): Promise<boole
 
     // mettre à jour le webcontainer avec le contenu des fichiers
     await webContainerService.updateWebContainer(webcontainerId, {
-      fileContents,
       metadata: {
         workdirName: WORK_DIR_NAME,
-        files: Object.keys(fileContents),
+        files: Object.entries(fileContents).map(([path, content]) => ({ path, content })),
       },
     });
 

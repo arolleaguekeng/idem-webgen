@@ -117,16 +117,18 @@ export const GenerateChat = memo(({ projectId }: GenerateChatProps) => {
       await sendMessage(`${diff}\n\n${prompt}`);
       workbenchStore.resetAllFileModifications();
 
-      // mettre à jour les métadonnées du webcontainer avec les fichiers créés
+      // convert fileModifications to the expected format: Record<string, string>[]
       try {
         const webcontainerId = getRegisteredWebContainerId();
 
         if (webcontainerId) {
-          const modifiedFiles = Object.keys(fileModifications);
+          const filesArray = Object.entries(fileModifications).map(([path, modifiedFile]) => ({
+            [path]: modifiedFile.content,
+          }));
           await updateWebContainerMetadata({
-            files: modifiedFiles,
+            files: filesArray,
           });
-          logger.debug('Updated webcontainer metadata with files:', modifiedFiles);
+          logger.debug('Updated webcontainer metadata with files:', Object.keys(fileModifications));
         }
       } catch (error) {
         logger.warn('Failed to update webcontainer metadata:', error);
