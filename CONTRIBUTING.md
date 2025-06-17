@@ -59,7 +59,7 @@ pnpm install
 3. Create a `.env.local` file in the root directory and add your Anthropic API key:
 
 ```
-ANTHROPIC_API_KEY=XXX
+GEMINI_API_KEY=XXX
 ```
 
 Optionally, you can set the debug level:
