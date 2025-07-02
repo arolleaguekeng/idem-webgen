@@ -24,13 +24,10 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && pnpm add -D sass-embedded
 
       - name: Build project
         run: pnpm build
-
-      - name: Install wrangler
-        run: pnpm add -g wrangler
 
       - name: Deploy to Cloudflare Pages
         env:
