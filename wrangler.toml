@@ -4,6 +4,3 @@ compatibility_flags = ["nodejs_compat", "streams_enable_constructors"]
 compatibility_date = "2024-07-01"
 pages_build_output_dir = "./build/client"
 
-[build]
-command = "npm run build"
-
