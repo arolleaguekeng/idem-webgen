@@ -38,13 +38,13 @@ export function HistoryItem({ item, onDelete }: HistoryItemProps) {
   return (
     <div
       ref={hoverRef}
-      className="group rounded-md text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-3 overflow-hidden flex justify-between items-center px-2 py-1"
+      className="group rounded-md text-gray-300 hover:text-white hover:bg-gray-700 overflow-hidden flex justify-between items-center px-3 py-2"
     >
       <a href={`/chat/${item.urlId}`} className="flex w-full relative truncate block">
         {item.description}
-        <div className="absolute right-0 z-1 top-0 bottom-0 bg-gradient-to-l from-bolt-elements-background-depth-2 group-hover:from-bolt-elements-background-depth-3 to-transparent w-10 flex justify-end group-hover:w-15 group-hover:from-45%">
+        <div className="absolute right-0 z-1 top-0 bottom-0 bg-gradient-to-l from-[#202123] group-hover:from-gray-700 to-transparent w-10 flex justify-end group-hover:w-15 group-hover:from-45%">
           {hovering && (
-            <div className="flex items-center p-1 text-bolt-elements-textSecondary hover:text-bolt-elements-item-contentDanger">
+            <div className="flex items-center p-1 text-gray-400 hover:text-red-500">
               <Dialog.Trigger asChild>
                 <button
                   className="i-ph:trash scale-110"

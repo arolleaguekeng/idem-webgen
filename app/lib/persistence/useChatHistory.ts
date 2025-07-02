@@ -4,7 +4,7 @@ import { atom } from 'nanostores';
 import type { Message } from 'ai';
 import { toast } from 'react-toastify';
 import { workbenchStore } from '~/lib/stores/workbench';
-import { getMessages, getNextId, getUrlId, openDatabase, setMessages } from './db';
+import { getMessages, getNextId, getUrlId, setMessages, currentUser } from './db';
 
 export interface ChatHistoryItem {
   id: string;
@@ -12,11 +12,11 @@ export interface ChatHistoryItem {
   description?: string;
   messages: Message[];
   timestamp: string;
+  projectId?: string;
+  webcontainerId?: string;
 }
 
 const persistenceEnabled = !import.meta.env.VITE_DISABLE_PERSISTENCE;
-
-export const db = persistenceEnabled ? await openDatabase() : undefined;
 
 export const chatId = atom<string | undefined>(undefined);
 export const description = atom<string | undefined>(undefined);
@@ -30,18 +30,13 @@ export function useChatHistory() {
   const [urlId, setUrlId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (!db) {
+    if (!persistenceEnabled) {
       setReady(true);
-
-      if (persistenceEnabled) {
-        toast.error(`Chat persistence is unavailable`);
-      }
-
       return;
     }
 
     if (mixedId) {
-      getMessages(db, mixedId)
+      getMessages(mixedId)
         .then((storedMessages) => {
           if (storedMessages && storedMessages.messages.length > 0) {
             setInitialMessages(storedMessages.messages);
@@ -64,14 +59,14 @@ export function useChatHistory() {
     ready: !mixedId || ready,
     initialMessages,
     storeMessageHistory: async (messages: Message[]) => {
-      if (!db || messages.length === 0) {
+      if (!persistenceEnabled || !currentUser || messages.length === 0) {
         return;
       }
 
       const { firstArtifact } = workbenchStore;
 
       if (!urlId && firstArtifact?.id) {
-        const urlId = await getUrlId(db, firstArtifact.id);
+        const urlId = await getUrlId(firstArtifact.id);
 
         navigateChat(urlId);
         setUrlId(urlId);
@@ -82,7 +77,7 @@ export function useChatHistory() {
       }
 
       if (initialMessages.length === 0 && !chatId.get()) {
-        const nextId = await getNextId(db);
+        const nextId = await getNextId();
 
         chatId.set(nextId);
 
@@ -91,7 +86,13 @@ export function useChatHistory() {
         }
       }
 
-      await setMessages(db, chatId.get() as string, messages, urlId, description.get());
+      // send the chat messages to the API
+      await setMessages(chatId.get() as string, messages, urlId);
+
+      /**
+       * Note: the current API implementation doesn't support description
+       * and project association - you'll need to extend the API to include these.
+       */
     },
   };
 }

@@ -1,9 +1,11 @@
-import { createAnthropic } from '@ai-sdk/anthropic';
+// utils/ai/google.ts
 
-export function getAnthropicModel(apiKey: string) {
-  const anthropic = createAnthropic({
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+
+export function getGeminiModel(apiKey: string) {
+  const gemini = createGoogleGenerativeAI({
     apiKey,
   });
 
-  return anthropic('claude-3-5-sonnet-20240620');
+  return gemini('gemini-2.0-flash');
 }
